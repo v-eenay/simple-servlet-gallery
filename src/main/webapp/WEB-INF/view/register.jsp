@@ -12,6 +12,14 @@
 </head>
 <body>
     <h1>Register</h1>
+    <%
+        String error = request.getParameter("error");
+        if (error != null && error.equals("true")) {
+    %>
+        <div>Error creating user, try again</div>
+    <%
+        }
+    %>
     <form action="" method="post">
         <fieldset>
             <legend>Register</legend>
