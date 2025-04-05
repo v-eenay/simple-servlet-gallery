@@ -5,10 +5,10 @@
     <title>JSP - Hello World</title>
 </head>
 <body>
-<h1>Very Simple Image Gallery
-</h1>
-<br/>
-<a href="hello-servlet">Add images</a>
-<a href="#">View images</a>
+    <%
+
+    %>
+    <h1>Image Gallery</h1>
+    <h2>Hello <%%>, welcome to image gallery</h2>
 </body>
 </html>
