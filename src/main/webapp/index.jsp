@@ -7,15 +7,8 @@
 </head>
 <body>
 <%
-    // Check if user is not logged in
     User user = (User) session.getAttribute("user");
-    String username;
-    if (user == null) {
-        response.sendRedirect(request.getContextPath() + "/login");
-        return;
-    } else {
-        username = user.getFullName();
-    }
+    String username = user.getFullName();
 %>
 <h1>Image Gallery</h1>
 <h2>Hello <%=username%>, welcome to the image gallery</h2>

@@ -13,13 +13,8 @@
 <body>
     <%
         User user = (User) session.getAttribute("user");
-        if (user==null){
-
-        }
-        else {
-
-        }
+        String username = user.getFullName();
     %>
-    <h1>Welcome <%=%></h1>
+    <h1>Welcome <%=username%>, please add now item</h1>
 </body>
 </html>

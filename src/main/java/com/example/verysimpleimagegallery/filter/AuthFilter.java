@@ -2,17 +2,35 @@ package com.example.verysimpleimagegallery.filter;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
-@WebFilter(filterName = "AuthFilter")
+import java.io.IOException;
+
+@WebFilter(filterName = "AuthFilter", urlPatterns = "/*")
 public class AuthFilter implements Filter {
-    public void init(FilterConfig config) throws ServletException {
-    }
-
-    public void destroy() {
-    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
-        chain.doFilter(request, response);
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
+        HttpSession session = req.getSession(false); // don't create if not exists
+
+        // Safe login check
+        boolean isLoggedIn = session != null && Boolean.TRUE.equals(session.getAttribute("isLoggedIn"));
+
+        String uri = req.getRequestURI();
+        String ctx = req.getContextPath();
+
+        // Allow login/logout/register and static files
+        boolean isPublic = uri.equals(ctx + "/login") || uri.equals(ctx + "/logout") || uri.equals(ctx + "/register") ||
+                uri.endsWith(".css") || uri.endsWith(".js") || uri.endsWith(".png") || uri.endsWith(".jpg");
+
+        if (isLoggedIn || isPublic) {
+            chain.doFilter(request, response);
+        } else {
+            res.sendRedirect(ctx + "/login");
+        }
     }
 }
