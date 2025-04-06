@@ -167,6 +167,92 @@ form {
     text-align: left;
 }
 
+/* Upload Zone Styles */
+.upload-container {
+    margin-bottom: var(--spacing-xl);
+}
+
+.upload-zone {
+    display: block;
+    width: 100%;
+    min-height: 200px;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.upload-zone:hover {
+    border-color: var(--text);
+    background-color: var(--surface);
+}
+
+.upload-zone.dragover {
+    border-color: var(--accent);
+    background-color: var(--surface);
+}
+
+.upload-prompt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+    color: var(--text-light);
+}
+
+.upload-icon {
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-light);
+}
+
+.preview-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--surface);
+    z-index: 1;
+}
+
+.preview-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.remove-preview {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    background: var(--text);
+    color: var(--background);
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-lg);
+    line-height: 1;
+    padding: 0;
+    transition: all var(--transition-fast);
+    z-index: 2;
+}
+
+.remove-preview:hover {
+    background: var(--error);
+    transform: scale(1.1);
+}
+
 fieldset {
     border: none;
     padding: var(--spacing-xl) 0;
@@ -291,6 +377,7 @@ select.error {
 
 .gallery-item:hover {
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .gallery-item img {
@@ -299,10 +386,31 @@ select.error {
     object-fit: cover;
     opacity: 0;
     transition: opacity var(--transition-normal);
+    background-color: var(--surface);
 }
 
 .gallery-item img.loaded {
     opacity: 1;
+}
+
+/* Add a subtle loading indicator */
+.gallery-item img:not(.loaded)::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    border-top-color: var(--text);
+    animation: spin 1s linear infinite;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 .gallery-item .item-info {
@@ -312,6 +420,7 @@ select.error {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color: var(--background);
 }
 
 .gallery-item .item-title {
@@ -326,6 +435,7 @@ select.error {
     display: flex;
     justify-content: center;
     border-top: 1px solid var(--border);
+    background-color: var(--background);
 }
 
 .gallery-item .item-actions .button {
@@ -424,6 +534,11 @@ table img {
     margin: 0 auto;
     padding: var(--spacing-lg) 0;
     border-top: 1px solid var(--border);
+}
+
+/* Hide the actual file input */
+#imageInput {
+    display: none;
 }
 
 /* Responsive Design */

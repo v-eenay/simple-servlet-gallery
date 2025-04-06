@@ -156,7 +156,7 @@ function enhanceInputFields() {
         if (!input) return;
         
         // Extract text content (excluding the input element)
-        const labelText = label.childNodes[0].nodeValue.trim();
+        const labelText = label.childNodes[0]?.nodeValue?.trim();
         if (!labelText) return;
         
         // Clear the text node
@@ -170,6 +170,107 @@ function enhanceInputFields() {
         // Insert at beginning of label
         label.insertBefore(labelSpan, label.firstChild);
     });
+
+    // Initialize file upload functionality
+    initFileUpload();
+}
+
+/**
+ * Handle file upload with preview
+ */
+function initFileUpload() {
+    const uploadZone = document.querySelector('.upload-zone');
+    const imageInput = document.getElementById('imageInput');
+    const previewContainer = document.querySelector('.preview-container');
+    const imagePreview = document.getElementById('imagePreview');
+    const removePreviewBtn = document.querySelector('.remove-preview');
+    const uploadPrompt = document.querySelector('.upload-prompt');
+
+    if (!uploadZone || !imageInput) return;
+
+    // Handle drag and drop events
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadZone.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    // Handle drag enter/over
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadZone.addEventListener(eventName, () => {
+            uploadZone.classList.add('dragover');
+        });
+    });
+
+    // Handle drag leave/drop
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadZone.addEventListener(eventName, () => {
+            uploadZone.classList.remove('dragover');
+        });
+    });
+
+    // Handle dropped files
+    uploadZone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+
+        if (files.length > 0) {
+            handleFiles(files);
+        }
+    });
+
+    // Handle file input change
+    imageInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleFiles(e.target.files);
+        }
+    });
+
+    // Handle file selection
+    function handleFiles(files) {
+        const file = files[0];
+        
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            alert('Please upload an image file');
+            return;
+        }
+
+        // Validate file size (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('File size must be less than 5MB');
+            return;
+        }
+
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagePreview.src = e.target.result;
+            uploadPrompt.style.display = 'none';
+            previewContainer.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Remove preview
+    if (removePreviewBtn) {
+        removePreviewBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation(); // Prevent event from bubbling up to upload zone
+            imageInput.value = '';
+            imagePreview.src = '#';
+            previewContainer.style.display = 'none';
+            uploadPrompt.style.display = 'flex';
+        });
+    }
+    
+    // Click on upload zone should trigger file input
+    uploadZone.addEventListener('click', () => {
+        imageInput.click();
+    });
 }
 
 /**
@@ -179,61 +280,74 @@ function initGalleryAnimations() {
     // Image loading animations with lazy loading
     const galleryImages = document.querySelectorAll('.gallery-item img');
     
-    // Set up intersection observer for lazy loading
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                if (img.dataset.src) {
-                    img.src = img.dataset.src;
-                    img.removeAttribute('data-src');
-                }
-                
-                // When image loads
-                img.addEventListener('load', () => {
-                    img.classList.add('loaded');
-                });
-                
-                observer.unobserve(img);
-            }
-        });
-    }, { rootMargin: '50px 0px' });
+    if (galleryImages.length === 0) return;
     
-    galleryImages.forEach(img => {
-        // Convert src to data-src for lazy loading
-        if (img.src) {
-            img.dataset.src = img.src;
-            img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"%3E%3C/svg%3E';
-            imageObserver.observe(img);
-        }
+    // Check if IntersectionObserver is supported
+    if ('IntersectionObserver' in window) {
+        // Set up intersection observer for lazy loading
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    const src = img.getAttribute('src');
+                    
+                    // Skip placeholder images and set real src
+                    if (src && src.includes('data:image')) {
+                        // Get the original path from the alt attribute or data-src
+                        const originalSrc = img.dataset.src || img.getAttribute('alt');
+                        if (originalSrc) {
+                            img.src = originalSrc;
+                        }
+                    }
+                    
+                    // When image loads
+                    img.onload = () => {
+                        img.classList.add('loaded');
+                    };
+                    
+                    observer.unobserve(img);
+                }
+            });
+        }, { rootMargin: '50px 0px' });
         
-        // If image is already loaded
-        if (img.complete && !img.dataset.src) {
+        galleryImages.forEach(img => {
+            imageObserver.observe(img);
+        });
+    } else {
+        // Fallback for browsers that don't support IntersectionObserver
+        galleryImages.forEach(img => {
             img.classList.add('loaded');
-        }
-    });
+        });
+    }
     
     // Stagger gallery items appearance
     const galleryItems = document.querySelectorAll('.gallery-item');
     
-    const itemObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach((entry, index) => {
-            if (entry.isIntersecting) {
-                // Delay based on index for staggered effect
-                setTimeout(() => {
-                    entry.target.classList.add('visible');
-                }, index * 100);
-                observer.unobserve(entry.target);
-            }
+    if ('IntersectionObserver' in window) {
+        const itemObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    // Delay based on index for staggered effect
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        galleryItems.forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(10px)';
+            item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            itemObserver.observe(item);
         });
-    }, { threshold: 0.1 });
-    
-    galleryItems.forEach(item => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateY(10px)';
-        item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        itemObserver.observe(item);
-    });
+    } else {
+        // Fallback for browsers that don't support IntersectionObserver
+        galleryItems.forEach(item => {
+            item.classList.add('visible');
+        });
+    }
 }
 
 /**
