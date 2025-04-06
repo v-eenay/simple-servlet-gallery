@@ -33,7 +33,7 @@
                 <td><%=galleryItem.getId()%></td>
                 <td><%=galleryItem.getTitle()%></td>
                 <td><img src="${pageContext.request.contextPath}/imagedisplay?id=<%=galleryItem.getId()%>" alt="Image"></td>
-                <td><a href="${pageContext.request.contextPath}/deleteimage">Delete this item</a></td>
+                <td><a href="${pageContext.request.contextPath}/deleteimage?id=<%=galleryItem.getId()%>">Delete this item</a></td>
             </tr>
         <%
             }
