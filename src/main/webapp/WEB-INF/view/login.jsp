@@ -12,7 +12,15 @@
 </head>
 <body>
     <h1>Login</h1>
-    <form action="/login" method="post">
+    <%
+        String regerror = request.getParameter("regerror");
+        if (regerror != null && regerror.equals("false")) {
+    %>
+        <div>Registration successful</div>
+    <%
+        }
+    %>
+    <form action="${pageContext.request.contextPath}/login" method="post">
         <fieldset>
             <legend>Login</legend>
             <label>Email: <input type="text" name="email" /></label>

@@ -2,8 +2,6 @@ package com.example.verysimpleimagegallery.service;
 
 import com.example.verysimpleimagegallery.dao.GalleryItemDAO;
 import com.example.verysimpleimagegallery.model.GalleryItem;
-import com.example.verysimpleimagegallery.model.User;
-
 import java.util.ArrayList;
 
 public class GalleryService {

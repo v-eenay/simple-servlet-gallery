@@ -29,7 +29,7 @@ public class LoginServlet extends HttpServlet {
         if (user != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/home.jsp?loginerror=false");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp?loginerror=false");
             dispatcher.forward(request, response);
         } else {
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/login.jsp?loginerror=true");

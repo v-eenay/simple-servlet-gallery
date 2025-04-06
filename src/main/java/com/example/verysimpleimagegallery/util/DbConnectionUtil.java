@@ -1,5 +1,8 @@
 package com.example.verysimpleimagegallery.util;
 
+import com.example.verysimpleimagegallery.dao.UserDAO;
+import com.example.verysimpleimagegallery.model.User;
+
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,12 +15,12 @@ public class DbConnectionUtil {
     private static String password;
 
     static {
-        try(InputStream is = DbConnectionUtil.class.getClassLoader().getResourceAsStream("db_connection.properties")) {
+        try(InputStream is = DbConnectionUtil.class.getClassLoader().getResourceAsStream("db.properties")) {
             Properties prop = new Properties();
             prop.load(is);
             Class.forName(prop.getProperty("db.driver"));
             url = prop.getProperty("db.url");
-            user = prop.getProperty("db.user");
+            user = prop.getProperty("db.username");
             password = prop.getProperty("db.password");
         }
         catch(Exception e) {
