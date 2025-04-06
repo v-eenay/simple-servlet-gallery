@@ -29,6 +29,7 @@ public class LoginServlet extends HttpServlet {
         if (user != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
+            session.setAttribute("isLoggedIn", true);
             RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp?loginerror=false");
             dispatcher.forward(request, response);
         } else {

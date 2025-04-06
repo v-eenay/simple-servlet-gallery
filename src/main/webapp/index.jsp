@@ -10,6 +10,14 @@
     User user = (User) session.getAttribute("user");
     String username = user.getFullName();
 %>
+<%
+    String imgmsg = (String) request.getAttribute("imgmsg");
+    if (imgmsg!=null){
+%>
+    <div><%=imgmsg%></div>
+<%
+    }
+%>
 <h1>Image Gallery</h1>
 <h2>Hello <%=username%>, welcome to the image gallery</h2>
 <a href="${pageContext.request.contextPath}/addimage">Add new image</a><br>
