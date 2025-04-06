@@ -1,36 +1,41 @@
-<%@ page import="com.example.verysimpleimagegallery.model.User" %><%--
-  Created by IntelliJ IDEA.
-  User: koira
-  Date: 4/5/2025
-  Time: 9:13 PM
-  To change this template use File | Settings | File Templates.
---%>
+<%@ page import="com.example.verysimpleimagegallery.model.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Add Item</title>
+    <title>Add Image - Image Gallery</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <%
-        User user = (User) session.getAttribute("user");
-        String username = user.getFullName();
-    %>
-    <h1>Welcome <%=username%>, please add now item</h1>
-    <form action="${pageContext.request.contextPath}/addimage" method="POST" enctype="multipart/form-data">
-        <fieldset>
-            <legend>Add Image</legend>
-            <label>Title: <input type="text" name="title"></label>
-            <label>File: <input type="file" name="image"></label>
-            <input type="submit" value="Submit">
-        </fieldset>
-    </form>
-    <%
-        String error = request.getParameter("error");
-        if(error!=null && error.equals("true")){
-    %>
-        <div>Error uploading image</div>
-    <%
-        }
-    %>
+    <div class="container">
+        <%
+            User user = (User) session.getAttribute("user");
+            String username = user.getFullName();
+        %>
+        <h1>Upload New Image</h1>
+        <h2>Hello, <%=username%></h2>
+
+        <div class="nav-links">
+            <a href="${pageContext.request.contextPath}/viewgallery" class="button secondary">View Gallery</a>
+            <a href="${pageContext.request.contextPath}/" class="button secondary">Back to Dashboard</a>
+        </div>
+
+        <form action="${pageContext.request.contextPath}/addimage" method="post" enctype="multipart/form-data">
+            <fieldset>
+                <legend>Image Details</legend>
+                <label>
+                    Image Title
+                    <input type="text" name="title" required placeholder="Enter a title for your image" />
+                </label>
+                <label>
+                    Image File
+                    <input type="file" name="image" required accept="image/*" />
+                    <div class="field-help">Supported formats: JPEG, PNG, GIF</div>
+                </label>
+                <input type="submit" value="Upload Image" class="button" />
+            </fieldset>
+        </form>
+    </div>
+    <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
 </body>
 </html>

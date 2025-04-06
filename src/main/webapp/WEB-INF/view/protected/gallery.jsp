@@ -10,34 +10,47 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Gallery</title>
+    <title>Gallery - Image Gallery</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <%
-        User user = (User) session.getAttribute("user");
-    %>
-    <h1>Gallery</h1>
-    <h2>Hello <%=user.getFullName()%>
-    </h2>
-    <table>
-        <tr>
-            <th>S.N.</th>
-            <th>Title</th>
-            <th>Image</th>
-        </tr>
+    <div class="container">
+        <%
+            User user = (User) session.getAttribute("user");
+        %>
+        <h1>Your Image Gallery</h1>
+        <h2>Welcome, <%=user.getFullName()%></h2>
+
+        <div class="nav-links">
+            <a href="${pageContext.request.contextPath}/addimage" class="button">Upload New Image</a>
+            <a href="${pageContext.request.contextPath}/" class="button secondary">Back to Dashboard</a>
+            <a href="${pageContext.request.contextPath}/logout" class="button secondary">Sign Out</a>
+        </div>
+
         <%
             ArrayList<GalleryItem> galleryItems = (ArrayList<GalleryItem>) request.getAttribute("galleryItems");
-            for(GalleryItem galleryItem: galleryItems){
+            if (galleryItems != null && !galleryItems.isEmpty()) {
         %>
-            <tr>
-                <td><%=galleryItem.getId()%></td>
-                <td><%=galleryItem.getTitle()%></td>
-                <td><img src="${pageContext.request.contextPath}/imagedisplay?id=<%=galleryItem.getId()%>" alt="Image"></td>
-                <td><a href="${pageContext.request.contextPath}/deleteimage?id=<%=galleryItem.getId()%>">Delete this item</a></td>
-            </tr>
-        <%
-            }
-        %>
-    </table>
+        <div class="gallery-grid">
+            <% for(GalleryItem galleryItem: galleryItems) { %>
+                <div class="gallery-item">
+                    <img src="${pageContext.request.contextPath}/imagedisplay?id=<%=galleryItem.getId()%>" alt="<%=galleryItem.getTitle()%>">
+                    <div class="item-info">
+                        <h3 class="item-title"><%=galleryItem.getTitle()%></h3>
+                    </div>
+                    <div class="item-actions">
+                        <a href="${pageContext.request.contextPath}/deleteimage?id=<%=galleryItem.getId()%>" class="button secondary">Delete</a>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+        <% } else { %>
+            <div class="message">
+                <p>You haven't uploaded any images yet. Get started by clicking "Upload New Image".</p>
+            </div>
+        <% } %>
+    </div>
+    <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
 </body>
 </html>

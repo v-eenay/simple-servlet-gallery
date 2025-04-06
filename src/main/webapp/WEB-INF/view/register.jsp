@@ -8,27 +8,47 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>Register - Image Gallery</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <h1>Register</h1>
-    <%
-        String error = request.getParameter("error");
-        if (error != null && error.equals("true")) {
-    %>
-        <div>Error creating user, try again</div>
-    <%
-        }
-    %>
-    <form action="" method="post">
-        <fieldset>
-            <legend>Register</legend>
-            <label for="fullname">Full Name:<input type="text" id="fullname" name="fullname"></label>
-            <br><label for="email">Email Address:<input type="text" id="email" name="email"></label>
-            <br><label for="password">Password:<input type="password" id="password" name="password"></label>
-            <br><input type="submit" value="Register">
-        </fieldset>
-    </form>
-    <a href="${pageContext.request.contextPath}">Login</a>
+    <div class="container">
+        <h1>Create Your Account</h1>
+        
+        <%
+            String error = request.getParameter("regerror");
+            if (error != null && error.equals("true")) {
+        %>
+            <div class="message error">Registration failed. Email might already be in use.</div>
+        <%
+            }
+        %>
+        
+        <form action="${pageContext.request.contextPath}/register" method="post">
+            <fieldset>
+                <legend>Register New Account</legend>
+                <label>
+                    Full Name
+                    <input type="text" name="fullname" required placeholder="Enter your full name" />
+                </label>
+                <label>
+                    Email Address
+                    <input type="email" name="email" required placeholder="Enter your email" />
+                </label>
+                <label>
+                    Password
+                    <input type="password" name="password" required placeholder="Choose a password" />
+                </label>
+                <input type="submit" value="Create Account" />
+            </fieldset>
+        </form>
+        
+        <div class="nav-links">
+            <a href="${pageContext.request.contextPath}/login" class="button secondary">Already have an account? Sign In</a>
+        </div>
+    </div>
+    
+    <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
 </body>
 </html>
