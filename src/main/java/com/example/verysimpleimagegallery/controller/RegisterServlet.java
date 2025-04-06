@@ -1,12 +1,12 @@
 package com.example.verysimpleimagegallery.controller;
 
-import com.example.verysimpleimagegallery.dao.UserDAO;
-import com.example.verysimpleimagegallery.model.User;
+import com.example.verysimpleimagegallery.service.AuthService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 @WebServlet(name = "RegisterServlet", value = "/register")
 public class RegisterServlet extends HttpServlet {
@@ -21,14 +21,22 @@ public class RegisterServlet extends HttpServlet {
         String fullname = request.getParameter("fullname");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        User user = new User(fullname, email, password);
-        if (UserDAO.createUser(user)>0) {
-            HttpSession session = request.getSession();
-            session.setAttribute("user", user);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/login.jsp?regerror=false");
-            dispatcher.forward(request, response);
-        }
-        else{
+        
+        try {
+            // Use AuthService to create user with hashed password
+            int userId = AuthService.createUser(fullname, email, password);
+            
+            if (userId > 0) {
+                // Registration successful, redirect to login page
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/login.jsp?regerror=false");
+                dispatcher.forward(request, response);
+            } else {
+                // Registration failed (likely email already exists)
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/register.jsp?regerror=true");
+                dispatcher.forward(request, response);
+            }
+        } catch (SQLException e) {
+            // Handle database error
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/register.jsp?regerror=true");
             dispatcher.forward(request, response);
         }

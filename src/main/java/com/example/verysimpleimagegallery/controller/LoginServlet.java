@@ -5,8 +5,8 @@ import jakarta.servlet.annotation.*;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import com.example.verysimpleimagegallery.dao.UserDAO;
 import com.example.verysimpleimagegallery.model.User;
+import com.example.verysimpleimagegallery.service.AuthService;
 
 @WebServlet(name = "LoginServlet", value = "/login")
 public class LoginServlet extends HttpServlet {
@@ -21,19 +21,24 @@ public class LoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         User user = null;
+        
         try {
-            user = UserDAO.validateUser(email, password);
+            // Use AuthService to validate user with secure password checking
+            user = AuthService.validateUser(email, password);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        
         if (user != null) {
+            // Login successful
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
             session.setAttribute("isLoggedIn", true);
             RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp?loginerror=false");
             dispatcher.forward(request, response);
         } else {
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/login.jsp?loginerror=true");
+            // Login failed
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/login.jsp?error=true");
             dispatcher.forward(request, response);
         }
     }
