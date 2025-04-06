@@ -22,6 +22,15 @@ public class GalleryService {
         }
         return null;
     }
+    public static GalleryItem getGalleryItemById(int id) {
+        try{
+            return GalleryItemDAO.getGalleryItem(id);
+        }
+        catch (Exception e) {
+            System.err.println(e.getMessage());;
+        }
+        return null;
+    }
     public static boolean deleteGalleryItem(GalleryItem galleryItem) {
         try{
             return GalleryItemDAO.deleteGalleryItem(galleryItem);

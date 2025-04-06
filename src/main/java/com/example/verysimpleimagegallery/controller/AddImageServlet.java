@@ -39,6 +39,7 @@ public class AddImageServlet extends HttpServlet {
         GalleryItem item = new GalleryItem();
         item.setTitle(title);
         item.setImage(imageBytes);
+        item.setUserId(user.getId());
         if (GalleryService.addGallery(item)>0){
             session.setAttribute("user", user);
             request.setAttribute("imgmsg","You have successfully added a new image");
