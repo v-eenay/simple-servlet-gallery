@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
                        full_name VARCHAR(100) NOT NULL,    -- Store the user's full name
                        email VARCHAR(100) NOT NULL UNIQUE, -- Store the user's email and ensure it's unique
                        password VARCHAR(255) NOT NULL,     -- Store the user's password (hashed, not plain text)
+                       role INT DEFAULT 1 NOT NULL,        -- User role: 1=regular user (default), 0=admin, 2=super admin
                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,   -- Track when the user was created
                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Track when user details were last updated
 );

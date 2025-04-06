@@ -5,6 +5,7 @@ public class User {
     private String FullName;
     private String Email;
     private String Password;
+    private int role = 1; // Default to regular user (1)
 
     public User() {
     }
@@ -13,6 +14,7 @@ public class User {
         FullName = fullName;
         Email = email;
         Password = password;
+        this.role = 1; // Default to regular user
     }
 
     public User(int id, String fullName, String email, String password) {
@@ -20,6 +22,22 @@ public class User {
         FullName = fullName;
         Email = email;
         Password = password;
+        this.role = 1; // Default to regular user
+    }
+    
+    public User(String fullName, String email, String password, int role) {
+        FullName = fullName;
+        Email = email;
+        Password = password;
+        this.role = role;
+    }
+    
+    public User(int id, String fullName, String email, String password, int role) {
+        this.id = id;
+        FullName = fullName;
+        Email = email;
+        Password = password;
+        this.role = role;
     }
 
     public int getId() {
@@ -52,5 +70,26 @@ public class User {
 
     public void setPassword(String password) {
         Password = password;
+    }
+    
+    public int getRole() {
+        return role;
+    }
+    
+    public void setRole(int role) {
+        this.role = role;
+    }
+    
+    // Helper methods for role checks
+    public boolean isAdmin() {
+        return role == 0;
+    }
+    
+    public boolean isSuperAdmin() {
+        return role == 2;
+    }
+    
+    public boolean isRegularUser() {
+        return role == 1;
     }
 }

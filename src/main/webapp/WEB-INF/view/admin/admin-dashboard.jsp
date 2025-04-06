@@ -18,6 +18,16 @@
         <%
             User user = (User) session.getAttribute("user");
             String username = user.getFullName();
+            
+            Integer totalUsers = (Integer) request.getAttribute("totalUsers");
+            Integer adminCount = (Integer) request.getAttribute("adminCount");
+            
+            String error = (String) request.getAttribute("error");
+            if (error != null) {
+        %>
+            <div class="message error"><%=error%></div>
+        <%
+            }
         %>
         
         <%
@@ -34,24 +44,26 @@
         
         <div class="admin-stats">
             <div class="stat-card">
-                <div class="stat-number">24</div>
+                <div class="stat-number"><%=totalUsers != null ? totalUsers : 0%></div>
                 <div class="stat-title">Total Users</div>
             </div>
             
             <div class="stat-card">
-                <div class="stat-number">156</div>
-                <div class="stat-title">Total Images</div>
+                <div class="stat-number"><%=adminCount != null ? adminCount : 0%></div>
+                <div class="stat-title">Admins</div>
             </div>
             
             <div class="stat-card">
-                <div class="stat-number">5</div>
-                <div class="stat-title">Admins</div>
+                <div class="stat-number"><%=totalUsers != null && adminCount != null ? (totalUsers - adminCount) : 0%></div>
+                <div class="stat-title">Regular Users</div>
             </div>
         </div>
 
         <div class="nav-links">
             <a href="${pageContext.request.contextPath}/admin/list-users" class="button">Manage Users</a>
-            <a href="${pageContext.request.contextPath}/admin/add-admin" class="button">Add Admin</a>
+            <% if (user.isSuperAdmin()) { %>
+                <a href="${pageContext.request.contextPath}/admin/add-admin" class="button">Add Admin</a>
+            <% } %>
             <a href="${pageContext.request.contextPath}/" class="button">Gallery Home</a>
             <a href="${pageContext.request.contextPath}/logout" class="button secondary">Sign Out</a>
         </div>

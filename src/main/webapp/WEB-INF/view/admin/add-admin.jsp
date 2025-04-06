@@ -16,6 +16,12 @@
 <body>
     <div class="container">
         <%
+            User user = (User) session.getAttribute("user");
+            if (!user.isSuperAdmin()) {
+                response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+                return;
+            }
+            
             String error = request.getParameter("error");
             if (error != null && error.equals("true")) {
         %>

@@ -713,6 +713,20 @@ table img {
     text-decoration: underline;
 }
 
+button.action-link {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline;
+    margin-right: var(--spacing-md);
+}
+
+button.action-link:focus {
+    outline: none;
+}
+
 /* Pagination */
 .pagination {
     display: flex;
