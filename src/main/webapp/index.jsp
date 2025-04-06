@@ -23,18 +23,18 @@
             }
         %>
         
-        <h1>Image Gallery Dashboard</h1>
-        <h2>Welcome back, <%=username%>!</h2>
+        <h1>Image Gallery</h1>
+        <h2>Welcome, <%=username%></h2>
 
         <div class="nav-links">
-            <a href="${pageContext.request.contextPath}/addimage" class="button">Upload New Image</a>
+            <a href="${pageContext.request.contextPath}/addimage" class="button">Upload Image</a>
             <a href="${pageContext.request.contextPath}/viewgallery" class="button">View Gallery</a>
             <a href="${pageContext.request.contextPath}/logout" class="button secondary">Sign Out</a>
         </div>
         
         <div class="dashboard-section mt-lg">
-            <h3>Quick Access</h3>
-            <p>From here you can manage your image collection. Upload new images, view your gallery, or sign out of your account.</p>
+            <h3>Manage Your Collection</h3>
+            <p>Upload new images or browse your gallery.</p>
         </div>
     </div>
 

@@ -14,40 +14,41 @@
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to Image Gallery</h1>
+        <h1>Image Gallery</h1>
+        <h2>Sign in to continue</h2>
         
         <%
             String regerror = request.getParameter("regerror");
             if (regerror != null && regerror.equals("false")) {
         %>
-            <div class="message success">Registration successful! Please login to continue.</div>
+            <div class="message success">Registration successful. Please sign in.</div>
         <%
             }
             String error = request.getParameter("error");
             if (error != null && error.equals("true")) {
         %>
-            <div class="message error">Invalid email or password. Please try again.</div>
+            <div class="message error">Invalid email or password.</div>
         <%
             }
         %>
         
         <form action="${pageContext.request.contextPath}/login" method="post">
             <fieldset>
-                <legend>Login to Your Account</legend>
+                <legend>Login</legend>
                 <label>
                     Email Address
-                    <input type="email" name="email" required placeholder="Enter your email" />
+                    <input type="email" name="email" required placeholder="Enter email" />
                 </label>
                 <label>
                     Password
-                    <input type="password" name="password" required placeholder="Enter your password" />
+                    <input type="password" name="password" required placeholder="Enter password" />
                 </label>
                 <input type="submit" value="Sign In" />
             </fieldset>
         </form>
         
         <div class="nav-links">
-            <a href="${pageContext.request.contextPath}/register" class="button secondary">Create New Account</a>
+            <a href="${pageContext.request.contextPath}/register" class="button secondary">Create Account</a>
         </div>
     </div>
     

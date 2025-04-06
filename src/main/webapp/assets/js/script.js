@@ -1,5 +1,5 @@
 /**
- * Elegant Image Gallery - Main JavaScript
+ * Minimal Image Gallery - Main JavaScript
  * Handles animations, form validation, and UI interactions
  */
 
@@ -11,30 +11,29 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollToTop();
     initSmoothScrolling();
     initPageTransitions();
+    enhanceInputFields();
 });
 
 /**
  * Message notification system
- * Auto-hides messages after a delay
  */
 function initMessageSystem() {
     const messages = document.querySelectorAll('.message');
     
     messages.forEach(message => {
-        // Add slide-in animation
-        message.style.animation = 'slideInDown 0.5s ease forwards';
+        // Slide in from top with fade
+        message.style.animation = 'fadeInDown 0.5s ease forwards';
         
         // Auto-hide after delay
         setTimeout(() => {
             message.style.opacity = '0';
-            message.style.transform = 'translateY(-10px)';
-            setTimeout(() => message.remove(), 500);
-        }, 5000);
+            setTimeout(() => message.remove(), 400);
+        }, 4000);
     });
 }
 
 /**
- * Form validation with elegant error handling
+ * Form validation with minimal styling
  */
 function initFormValidation() {
     const forms = document.querySelectorAll('form');
@@ -46,20 +45,31 @@ function initFormValidation() {
             // Focus effect
             input.addEventListener('focus', () => {
                 input.parentElement.classList.add('focused');
+                input.parentElement.classList.add('active');
             });
             
             input.addEventListener('blur', () => {
-                input.parentElement.classList.remove('focused');
+                input.parentElement.classList.remove('active');
+                
+                // Keep focused class if has value
+                if (input.value.trim() === '') {
+                    input.parentElement.classList.remove('focused');
+                }
                 
                 // Validate on blur
                 if (input.hasAttribute('required') && !input.value.trim()) {
-                    markFieldAsError(input, 'This field is required');
+                    markFieldAsError(input, 'Required');
                 } else if (input.type === 'email' && input.value.trim()) {
                     validateEmail(input);
                 } else {
                     clearFieldError(input);
                 }
             });
+            
+            // Add filled class if field already has a value
+            if (input.value.trim() !== '') {
+                input.parentElement.classList.add('focused');
+            }
         });
         
         // Form submission validation
@@ -70,7 +80,7 @@ function initFormValidation() {
             requiredFields.forEach(field => {
                 if (!field.value.trim()) {
                     isValid = false;
-                    markFieldAsError(field, 'This field is required');
+                    markFieldAsError(field, 'Required');
                 } else if (field.type === 'email' && field.value.trim()) {
                     if (!validateEmail(field)) {
                         isValid = false;
@@ -81,7 +91,7 @@ function initFormValidation() {
             if (!isValid) {
                 e.preventDefault();
                 
-                // Scroll to first error with smooth animation
+                // Scroll to first error
                 const firstError = form.querySelector('.error');
                 if (firstError) {
                     firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -94,14 +104,12 @@ function initFormValidation() {
 
 /**
  * Validates email format
- * @param {HTMLInputElement} field - Email input field
- * @returns {boolean} - True if valid
  */
 function validateEmail(field) {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
     if (!emailPattern.test(field.value.trim())) {
-        markFieldAsError(field, 'Please enter a valid email address');
+        markFieldAsError(field, 'Invalid email');
         return false;
     } else {
         clearFieldError(field);
@@ -111,8 +119,6 @@ function validateEmail(field) {
 
 /**
  * Marks a form field as having an error
- * @param {HTMLElement} field - The form field
- * @param {string} message - Error message
  */
 function markFieldAsError(field, message) {
     field.classList.add('error');
@@ -127,17 +133,10 @@ function markFieldAsError(field, message) {
     
     // Insert after the field
     field.parentNode.appendChild(errorDiv);
-    
-    // Add shake animation
-    field.style.animation = 'shake 0.5s ease';
-    setTimeout(() => {
-        field.style.animation = '';
-    }, 500);
 }
 
 /**
  * Clears error state from a field
- * @param {HTMLElement} field - The form field
  */
 function clearFieldError(field) {
     field.classList.remove('error');
@@ -148,38 +147,97 @@ function clearFieldError(field) {
 }
 
 /**
- * Gallery animations
- * Adds fade-in, hover effects and loading animations
+ * Enhance input fields with minimal styling
+ */
+function enhanceInputFields() {
+    // Add floating labels effect
+    document.querySelectorAll('label').forEach(label => {
+        const input = label.querySelector('input, textarea, select');
+        if (!input) return;
+        
+        // Extract text content (excluding the input element)
+        const labelText = label.childNodes[0].nodeValue.trim();
+        if (!labelText) return;
+        
+        // Clear the text node
+        label.childNodes[0].nodeValue = '';
+        
+        // Create span for label text
+        const labelSpan = document.createElement('span');
+        labelSpan.textContent = labelText;
+        labelSpan.classList.add('label-text');
+        
+        // Insert at beginning of label
+        label.insertBefore(labelSpan, label.firstChild);
+    });
+}
+
+/**
+ * Gallery animations and better image display
  */
 function initGalleryAnimations() {
-    // Image loading animations
+    // Image loading animations with lazy loading
     const galleryImages = document.querySelectorAll('.gallery-item img');
     
-    galleryImages.forEach(img => {
-        // Show loading state initially
-        img.style.opacity = '0';
-        
-        // When image loads
-        img.addEventListener('load', () => {
-            img.classList.add('loaded');
+    // Set up intersection observer for lazy loading
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                if (img.dataset.src) {
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                }
+                
+                // When image loads
+                img.addEventListener('load', () => {
+                    img.classList.add('loaded');
+                });
+                
+                observer.unobserve(img);
+            }
         });
+    }, { rootMargin: '50px 0px' });
+    
+    galleryImages.forEach(img => {
+        // Convert src to data-src for lazy loading
+        if (img.src) {
+            img.dataset.src = img.src;
+            img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"%3E%3C/svg%3E';
+            imageObserver.observe(img);
+        }
         
         // If image is already loaded
-        if (img.complete) {
+        if (img.complete && !img.dataset.src) {
             img.classList.add('loaded');
         }
     });
     
-    // Gallery item stagger effect
+    // Stagger gallery items appearance
     const galleryItems = document.querySelectorAll('.gallery-item');
-    galleryItems.forEach((item, index) => {
-        item.style.animation = `fadeIn 0.5s ease forwards ${index * 0.1}s`;
+    
+    const itemObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                // Delay based on index for staggered effect
+                setTimeout(() => {
+                    entry.target.classList.add('visible');
+                }, index * 100);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    galleryItems.forEach(item => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(10px)';
+        item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        itemObserver.observe(item);
     });
 }
 
 /**
  * Scroll to top functionality
- * Shows/hides button based on scroll position
  */
 function initScrollToTop() {
     const scrollBtn = document.createElement('button');
@@ -229,15 +287,17 @@ function initSmoothScrolling() {
 }
 
 /**
- * Page transition effects
+ * Minimal page transition effects
  */
 function initPageTransitions() {
-    // Add page transition class to body
-    document.body.classList.add('page-transition');
-    
     // Add fade-in animation to main content
-    const mainContent = document.querySelector('main') || document.body;
-    mainContent.style.animation = 'fadeIn 0.8s ease-out';
+    document.body.style.opacity = '0';
+    document.body.style.transition = 'opacity 0.5s ease';
+    
+    // Fade in body when page loads
+    setTimeout(() => {
+        document.body.style.opacity = '1';
+    }, 50);
     
     // Set up exit animations for links
     document.querySelectorAll('a:not([href^="#"])').forEach(link => {
@@ -254,8 +314,8 @@ function initPageTransitions() {
             e.preventDefault();
             const href = this.getAttribute('href');
             
-            // Fade out animation
-            document.body.style.animation = 'fadeOut 0.3s ease forwards';
+            // Fade out
+            document.body.style.opacity = '0';
             
             // Navigate after animation completes
             setTimeout(() => {
@@ -270,48 +330,49 @@ const styleSheet = document.createElement('style');
 styleSheet.type = 'text/css';
 styleSheet.textContent = `
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-10px); }
         to { opacity: 1; transform: translateY(0); }
     }
     
-    @keyframes fadeOut {
-        from { opacity: 1; }
-        to { opacity: 0; }
+    .gallery-item.visible {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
     }
     
-    @keyframes slideInDown {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
+    .focused .label-text {
+        transform: translateY(-1.5rem) scale(0.85);
+        color: var(--text);
+        font-weight: 500;
     }
     
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        20%, 60% { transform: translateX(-5px); }
-        40%, 80% { transform: translateX(5px); }
+    .label-text {
+        position: absolute;
+        left: 0;
+        top: 0.35rem;
+        transition: transform 0.25s ease, color 0.25s ease;
+        transform-origin: left top;
+        pointer-events: none;
     }
     
-    .page-transition {
-        transition: opacity 0.3s ease;
+    .active.focused::after {
+        transform: scaleX(1);
     }
     
-    .focused {
-        position: relative;
-    }
-    
-    .focused::after {
+    label.focused::after {
         content: '';
         position: absolute;
-        bottom: -3px;
+        bottom: 0;
         left: 0;
         width: 100%;
-        height: 2px;
-        background-color: var(--primary);
+        height: 1px;
+        background-color: var(--text);
         transform: scaleX(0);
-        transition: transform 0.3s ease;
-    }
-    
-    .focused.active::after {
-        transform: scaleX(1);
+        transition: transform 0.25s ease;
     }
 `;
 document.head.appendChild(styleSheet);

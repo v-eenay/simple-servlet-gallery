@@ -2,7 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Add Image - Image Gallery</title>
+    <title>Upload - Image Gallery</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -12,12 +12,12 @@
             User user = (User) session.getAttribute("user");
             String username = user.getFullName();
         %>
-        <h1>Upload New Image</h1>
-        <h2>Hello, <%=username%></h2>
+        <h1>Upload Image</h1>
+        <h2>Add to your collection</h2>
 
         <div class="nav-links">
-            <a href="${pageContext.request.contextPath}/viewgallery" class="button secondary">View Gallery</a>
-            <a href="${pageContext.request.contextPath}/" class="button secondary">Back to Dashboard</a>
+            <a href="${pageContext.request.contextPath}/viewgallery" class="button">View Gallery</a>
+            <a href="${pageContext.request.contextPath}/" class="button">Dashboard</a>
         </div>
 
         <form action="${pageContext.request.contextPath}/addimage" method="post" enctype="multipart/form-data">
@@ -25,14 +25,14 @@
                 <legend>Image Details</legend>
                 <label>
                     Image Title
-                    <input type="text" name="title" required placeholder="Enter a title for your image" />
+                    <input type="text" name="title" required placeholder="Enter title" />
                 </label>
                 <label>
                     Image File
                     <input type="file" name="image" required accept="image/*" />
-                    <div class="field-help">Supported formats: JPEG, PNG, GIF</div>
+                    <div class="field-help">Supported: JPEG, PNG, GIF</div>
                 </label>
-                <input type="submit" value="Upload Image" class="button" />
+                <input type="submit" value="Upload" />
             </fieldset>
         </form>
     </div>

@@ -19,12 +19,12 @@
         <%
             User user = (User) session.getAttribute("user");
         %>
-        <h1>Your Image Gallery</h1>
-        <h2>Welcome, <%=user.getFullName()%></h2>
+        <h1>Image Gallery</h1>
+        <h2><%=user.getFullName()%>'s Collection</h2>
 
         <div class="nav-links">
-            <a href="${pageContext.request.contextPath}/addimage" class="button">Upload New Image</a>
-            <a href="${pageContext.request.contextPath}/" class="button secondary">Back to Dashboard</a>
+            <a href="${pageContext.request.contextPath}/addimage" class="button">Upload Image</a>
+            <a href="${pageContext.request.contextPath}/" class="button">Dashboard</a>
             <a href="${pageContext.request.contextPath}/logout" class="button secondary">Sign Out</a>
         </div>
 
@@ -47,7 +47,8 @@
         </div>
         <% } else { %>
             <div class="message">
-                <p>You haven't uploaded any images yet. Get started by clicking "Upload New Image".</p>
+                <p>You haven't uploaded any images yet.</p>
+                <p>Get started by clicking "Upload Image" above.</p>
             </div>
         <% } %>
     </div>
