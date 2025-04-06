@@ -21,8 +21,12 @@
             
             Integer totalUsers = (Integer) request.getAttribute("totalUsers");
             Integer adminCount = (Integer) request.getAttribute("adminCount");
+            Integer imageCount = (Integer) request.getAttribute("imageCount");
             
-            String error = (String) request.getAttribute("error");
+            String error = request.getParameter("error");
+            if (error == null) {
+                error = (String) request.getAttribute("error");
+            }
             if (error != null) {
         %>
             <div class="message error"><%=error%></div>
@@ -31,7 +35,10 @@
         %>
         
         <%
-            String message = (String) request.getAttribute("message");
+            String message = request.getParameter("message");
+            if (message == null) {
+                message = (String) request.getAttribute("message");
+            }
             if (message != null) {
         %>
             <div class="message success"><%=message%></div>
@@ -57,14 +64,23 @@
                 <div class="stat-number"><%=totalUsers != null && adminCount != null ? (totalUsers - adminCount) : 0%></div>
                 <div class="stat-title">Regular Users</div>
             </div>
+            
+            <div class="stat-card">
+                <div class="stat-number"><%=imageCount != null ? imageCount : 0%></div>
+                <div class="stat-title">Total Images</div>
+            </div>
         </div>
 
         <div class="nav-links">
             <a href="${pageContext.request.contextPath}/admin/list-users" class="button">Manage Users</a>
+            <a href="${pageContext.request.contextPath}/admin/gallery" class="button">Manage Gallery</a>
             <% if (user.isSuperAdmin()) { %>
                 <a href="${pageContext.request.contextPath}/admin/add-admin" class="button">Add Admin</a>
             <% } %>
             <a href="${pageContext.request.contextPath}/" class="button">Gallery Home</a>
+            <% if (!user.isSuperAdmin() && user.canUploadImages()) { %>
+                <a href="${pageContext.request.contextPath}/upload" class="button">Upload Image</a>
+            <% } %>
             <a href="${pageContext.request.contextPath}/logout" class="button secondary">Sign Out</a>
         </div>
         

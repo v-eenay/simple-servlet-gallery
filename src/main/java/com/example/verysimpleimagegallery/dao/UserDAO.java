@@ -137,7 +137,7 @@ public class UserDAO {
     
     public static List<User> getNonAdminUsers() {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM users WHERE role = 1 ORDER BY id";
+        String sql = "SELECT * FROM users WHERE role = 1 ORDER BY id"; // 1 = regular users
         try(Connection conn = DbConnectionUtil.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
@@ -198,7 +198,7 @@ public class UserDAO {
     }
     
     public static int getAdminCount() {
-        String sql = "SELECT COUNT(*) as count FROM users WHERE role = 0 OR role = 2";
+        String sql = "SELECT COUNT(*) as count FROM users WHERE role = 0 OR role = 2"; // Super admin (0) or regular admin (2)
         try(Connection conn = DbConnectionUtil.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();

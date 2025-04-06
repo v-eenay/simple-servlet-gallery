@@ -27,8 +27,8 @@ public class AuthService {
         // Hash the password before storing it
         String hashedPassword = PasswordHashUtil.hashPassword(password);
         
-        // Set role: 0 for admin, 2 for super admin
-        int role = isSuperAdmin ? 2 : 0;
+        // Set role: 0 for super admin, 2 for regular admin
+        int role = isSuperAdmin ? 0 : 2;
         
         User newUser = new User(fullname, email, hashedPassword, role);
         return UserDAO.createUser(newUser);
@@ -48,7 +48,7 @@ public class AuthService {
     
     public static boolean hasAdminAccess(User user) {
         if (user == null) return false;
-        return user.isAdmin() || user.isSuperAdmin();
+        return user.hasAdminPermissions();
     }
     
     public static boolean hasSuperAdminAccess(User user) {
@@ -62,9 +62,31 @@ public class AuthService {
         // Super admin can delete any user
         if (currentUser.isSuperAdmin()) return true;
         
-        // Admin can only delete regular users
+        // Regular admin can only delete regular users
         if (currentUser.isAdmin() && targetUser.isRegularUser()) return true;
         
         return false;
+    }
+    
+    public static boolean canUploadImages(User user) {
+        if (user == null) return false;
+        return user.canUploadImages();
+    }
+    
+    public static boolean canDeleteImage(User currentUser, User imageOwner) {
+        if (currentUser == null) return false;
+        
+        // Image owner can delete their own image
+        if (currentUser.getId() == imageOwner.getId()) return true;
+        
+        // Admin users can delete any image
+        if (currentUser.hasAdminPermissions()) return true;
+        
+        return false;
+    }
+    
+    public static boolean canViewAllImages(User user) {
+        if (user == null) return false;
+        return user.hasAdminPermissions();
     }
 }

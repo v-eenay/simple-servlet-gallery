@@ -81,15 +81,25 @@ public class User {
     }
     
     // Helper methods for role checks
-    public boolean isAdmin() {
-        return role == 0;
-    }
-    
     public boolean isSuperAdmin() {
-        return role == 2;
+        return role == 0;
     }
     
     public boolean isRegularUser() {
         return role == 1;
+    }
+    
+    public boolean isAdmin() {
+        return role == 2;
+    }
+    
+    // Helper method to check if user has admin-level permissions
+    public boolean hasAdminPermissions() {
+        return role == 0 || role == 2; // Super admin or regular admin
+    }
+    
+    // Helper method to check if user can upload images
+    public boolean canUploadImages() {
+        return role == 1 || role == 2; // Regular user or regular admin
     }
 }

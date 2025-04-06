@@ -70,7 +70,7 @@ public class UserActionServlet extends HttpServlet {
                 case "makeAdmin":
                     // Only super admin can make others admin
                     if (AuthService.hasSuperAdminAccess(currentUser)) {
-                        if (UserDAO.updateUserRole(userId, 0)) { // 0 = admin
+                        if (UserDAO.updateUserRole(userId, 2)) { // 2 = regular admin
                             response.sendRedirect(request.getContextPath() + "/admin/list-users?message=User promoted to admin");
                         } else {
                             response.sendRedirect(request.getContextPath() + "/admin/list-users?error=Failed to update user role");
@@ -96,7 +96,7 @@ public class UserActionServlet extends HttpServlet {
                 case "makeSuperAdmin":
                     // Only super admin can make others super admin
                     if (AuthService.hasSuperAdminAccess(currentUser)) {
-                        if (UserDAO.updateUserRole(userId, 2)) { // 2 = super admin
+                        if (UserDAO.updateUserRole(userId, 0)) { // 0 = super admin
                             response.sendRedirect(request.getContextPath() + "/admin/list-users?message=User promoted to super admin");
                         } else {
                             response.sendRedirect(request.getContextPath() + "/admin/list-users?error=Failed to update user role");
