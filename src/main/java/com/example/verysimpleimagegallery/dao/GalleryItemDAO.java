@@ -32,7 +32,7 @@ public class GalleryItemDAO {
 
     public static List<GalleryItem> getUserGalleryItems(int userId) {
         List<GalleryItem> items = new ArrayList<>();
-        String sql = "SELECT gi.*, u.full_name FROM gallery_items gi JOIN users u ON gi.user_id = u.id WHERE user_id = ? ORDER BY gi.created_at DESC";
+        String sql = "SELECT gi.id, gi.title, gi.image, gi.user_id, u.full_name FROM gallery_items gi JOIN users u ON gi.user_id = u.id WHERE user_id = ? ORDER BY gi.created_at DESC";
         try (Connection conn = DbConnectionUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
@@ -48,7 +48,7 @@ public class GalleryItemDAO {
 
     public static List<GalleryItem> getAllGalleryItems() {
         List<GalleryItem> items = new ArrayList<>();
-        String sql = "SELECT gi.*, u.full_name FROM gallery_items gi JOIN users u ON gi.user_id = u.id ORDER BY gi.created_at DESC";
+        String sql = "SELECT gi.id, gi.title, gi.image, gi.user_id, u.full_name FROM gallery_items gi JOIN users u ON gi.user_id = u.id ORDER BY gi.created_at DESC";
         try (Connection conn = DbConnectionUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
@@ -62,7 +62,7 @@ public class GalleryItemDAO {
     }
 
     public static GalleryItem getGalleryItemById(int itemId) {
-        String sql = "SELECT gi.*, u.full_name FROM gallery_items gi JOIN users u ON gi.user_id = u.id WHERE gi.id = ?";
+        String sql = "SELECT gi.id, gi.title, gi.image, gi.user_id, u.full_name FROM gallery_items gi JOIN users u ON gi.user_id = u.id WHERE gi.id = ?";
         try (Connection conn = DbConnectionUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, itemId);
