@@ -28,8 +28,11 @@
             <% if (user.getRole() == 0 || user.getRole() == 2) { %>
                 <a href="${pageContext.request.contextPath}/admin/dashboard" class="button">Admin Dashboard</a>
             <% } %>
-            <a href="${pageContext.request.contextPath}/logout" class="button secondary">Sign Out</a>
+            <a href="${pageContext.request.contextPath}/logout" class="button secondary logout-btn">Sign Out</a>
         </div>
+
+        <h1 class="gallery-title">Image Gallery</h1>
+        <h2 class="gallery-subtitle"><%=user.getFullName()%>'s Collection</h2>
 
         <div class="recent-activities">
             <h3>Recent Activities</h3>

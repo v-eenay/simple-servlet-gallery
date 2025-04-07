@@ -23,18 +23,22 @@
             }
         %>
         
-        <h1>Image Gallery</h1>
-        <h2>Welcome, <%=username%></h2>
-
         <div class="nav-links">
             <a href="${pageContext.request.contextPath}/addimage" class="button">Upload Image</a>
             <a href="${pageContext.request.contextPath}/viewgallery" class="button">View Gallery</a>
-            <a href="${pageContext.request.contextPath}/logout" class="button secondary">Sign Out</a>
+            <% if (user.getRole() == 0 || user.getRole() == 2) { %>
+                <a href="${pageContext.request.contextPath}/admin/dashboard" class="button">Admin Dashboard</a>
+            <% } %>
+            <a href="${pageContext.request.contextPath}/logout" class="button secondary logout-btn">Sign Out</a>
         </div>
+
+        <h1 class="gallery-title">Image Gallery</h1>
+        <h2 class="gallery-subtitle">Welcome, <%=username%></h2>
         
-        <div class="dashboard-section mt-lg">
+        <div class="dashboard-section">
             <h3>Manage Your Collection</h3>
-            <p>Upload new images or browse your gallery.</p>
+            <p>Upload new images or browse your gallery to manage your collection.</p>
+            <p>Our gallery provides a sophisticated space for your cherished images.</p>
         </div>
     </div>
 
