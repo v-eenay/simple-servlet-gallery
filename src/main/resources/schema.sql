@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS gallery_items (
                                id INT AUTO_INCREMENT PRIMARY KEY,   -- Auto increment the gallery item ID
                                title VARCHAR(255) NOT NULL,          -- Store the title of the gallery item
-                               image BLOB,                           -- Store the image as binary data (BLOB)
+                               image MEDIUMBLOB,                     -- Store the image as binary data (up to 16MB)
                                user_id INT,                          -- Foreign key to link the gallery item to a user
                                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,   -- Track when the gallery item was created
                                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Track when gallery item was last updated
