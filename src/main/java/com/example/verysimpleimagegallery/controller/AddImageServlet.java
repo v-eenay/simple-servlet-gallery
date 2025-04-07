@@ -8,6 +8,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @WebServlet(name = "AddImageServlet", value = "/addimage")
 @MultipartConfig(
