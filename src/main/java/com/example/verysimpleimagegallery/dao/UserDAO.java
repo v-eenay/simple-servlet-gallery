@@ -32,11 +32,7 @@ public class UserDAO {
         }
         return -1;
     }
-    /**
-     * @deprecated This method uses plain text password comparison. 
-     * Use AuthService.validateUser(email, password) which uses secure password hashing.
-     */
-    @Deprecated
+
     public static User validateUser(String email, String password) throws SQLException {
         String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
         try(Connection conn = DbConnectionUtil.getConnection();

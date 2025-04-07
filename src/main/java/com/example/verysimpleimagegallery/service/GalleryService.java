@@ -7,15 +7,15 @@ import java.util.ArrayList;
 public class GalleryService {
     public static int addGallery(GalleryItem galleryItem) {
         try{
-            return GalleryItemDAO.createGalleryItem(galleryItem);
+            return GalleryItemDAO.addGalleryItem(galleryItem);
         } catch (Exception e) {
             System.err.println(e.getMessage());;
         }
         return -1;
     }
-    public static ArrayList<GalleryItem> getGalleryItem() {
+    public static ArrayList<GalleryItem> getGalleryItem(int id) {
         try{
-            return GalleryItemDAO.getGalleryItems();
+            return (ArrayList<GalleryItem>) GalleryItemDAO.getUserGalleryItems(id);
         }
         catch (Exception e) {
             System.err.println(e.getMessage());;
@@ -24,7 +24,7 @@ public class GalleryService {
     }
     public static GalleryItem getGalleryItemById(int id) {
         try{
-            return GalleryItemDAO.getGalleryItem(id);
+            return GalleryItemDAO.getGalleryItemById(id);
         }
         catch (Exception e) {
             System.err.println(e.getMessage());;
@@ -33,7 +33,7 @@ public class GalleryService {
     }
     public static boolean deleteGalleryItem(GalleryItem galleryItem) {
         try{
-            return GalleryItemDAO.deleteGalleryItem(galleryItem);
+            return GalleryItemDAO.deleteGalleryItem(galleryItem.getId());
         }
         catch (Exception e) {
             System.err.println(e.getMessage());

@@ -16,7 +16,7 @@ public class ViewGalleryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        ArrayList<GalleryItem> galleryItems = GalleryService.getGalleryItem();
+        ArrayList<GalleryItem> galleryItems = GalleryService.getGalleryItem(user.getId());
         request.setAttribute("galleryItems", galleryItems);
         request.getRequestDispatcher("/WEB-INF/view/protected/gallery.jsp").forward(request, response);
     }

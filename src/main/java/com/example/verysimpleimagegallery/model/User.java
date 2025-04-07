@@ -14,7 +14,6 @@ public class User {
         FullName = fullName;
         Email = email;
         Password = password;
-        this.role = 1; // Default to regular user
     }
 
     public User(int id, String fullName, String email, String password) {
@@ -22,7 +21,6 @@ public class User {
         FullName = fullName;
         Email = email;
         Password = password;
-        this.role = 1; // Default to regular user
     }
     
     public User(String fullName, String email, String password, int role) {

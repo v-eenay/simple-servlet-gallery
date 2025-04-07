@@ -34,8 +34,17 @@ public class LoginServlet extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
             session.setAttribute("isLoggedIn", true);
+            if(user.isRegularUser()){
             RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp?loginerror=false");
-            dispatcher.forward(request, response);
+            dispatcher.forward(request, response);}
+            else if (user.isAdmin()) {
+                 RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/view/admin/admin-dashboard.jsp?loginerror=false");
+                 dispatcher.forward(request, response);
+            }
+            else {
+                RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/view/admin/admin-dashboard.jsp?loginerror=false");
+                dispatcher.forward(request, response);
+            }
         } else {
             // Login failed
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/login.jsp?error=true");

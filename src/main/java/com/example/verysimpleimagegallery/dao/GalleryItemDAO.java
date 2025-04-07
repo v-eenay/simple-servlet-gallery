@@ -15,7 +15,7 @@ public class GalleryItemDAO {
         try (Connection conn = DbConnectionUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, item.getTitle());
-            ps.setBytes(2, item.getImageData());
+            ps.setBytes(2, item.getImage());
             ps.setInt(3, item.getUserId());
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected > 0) {
@@ -108,17 +108,6 @@ public class GalleryItemDAO {
         item.setId(rs.getInt("id"));
         item.setTitle(rs.getString("title"));
         item.setUserId(rs.getInt("user_id"));
-        item.setUserName(rs.getString("full_name"));
-        
-        // Convert BLOB to Base64 for frontend display
-        Blob blob = rs.getBlob("image");
-        if (blob != null) {
-            byte[] imageData = blob.getBytes(1, (int) blob.length());
-            item.setImageData(imageData);
-            item.setBase64Image(Base64.getEncoder().encodeToString(imageData));
-        }
-        
-        item.setCreatedAt(rs.getTimestamp("created_at"));
         return item;
     }
 }
