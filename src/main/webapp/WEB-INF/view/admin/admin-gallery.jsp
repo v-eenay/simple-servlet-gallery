@@ -59,7 +59,7 @@
             <div class="gallery-grid admin-gallery">
                 <% for (GalleryItem item : galleryItems) { %>
                     <div class="gallery-item" data-title="<%=item.getTitle().toLowerCase()%>" data-user="<%=item.getUserName().toLowerCase()%>">
-                        <img src="data:image/jpeg;base64,<%=item.getBase64Image()%>" alt="<%=item.getTitle()%>" class="loaded" />
+                        <img src="${pageContext.request.contextPath}/imagedisplay?id=<%=item.getId()%>" alt="<%=item.getTitle()%>" class="loaded" />
                         <div class="item-info">
                             <h3 class="item-title"><%=item.getTitle()%></h3>
                             <p class="item-owner">Uploaded by: <%=item.getUserName()%></p>
