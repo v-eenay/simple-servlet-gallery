@@ -107,7 +107,23 @@ public class GalleryItemDAO {
         GalleryItem item = new GalleryItem();
         item.setId(rs.getInt("id"));
         item.setTitle(rs.getString("title"));
+        item.setImage(rs.getBytes("image"));
         item.setUserId(rs.getInt("user_id"));
+        item.setUserName(rs.getString("full_name"));
         return item;
+    }
+    private static String getUserName(GalleryItem item) {
+        String sql = "SELECT full_name FROM users WHERE id = ?";
+        try (Connection conn = DbConnectionUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, item.getUserId());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("full_name");
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return null;
     }
 }
