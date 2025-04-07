@@ -17,7 +17,9 @@ public class ViewGalleryServlet extends HttpServlet {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         ArrayList<GalleryItem> galleryItems = GalleryService.getGalleryItem(user.getId());
+        ArrayList<GalleryItem> recentActivities = GalleryService.getRecentActivities(5); // Get 5 most recent activities
         request.setAttribute("galleryItems", galleryItems);
+        request.setAttribute("recentActivities", recentActivities);
         request.getRequestDispatcher("/WEB-INF/view/protected/gallery.jsp").forward(request, response);
     }
 

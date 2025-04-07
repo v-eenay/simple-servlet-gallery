@@ -25,7 +25,33 @@
         <div class="nav-links">
             <a href="${pageContext.request.contextPath}/addimage" class="button">Upload Image</a>
             <a href="${pageContext.request.contextPath}/" class="button">Dashboard</a>
+            <% if (user.getRole() == 0 || user.getRole() == 2) { %>
+                <a href="${pageContext.request.contextPath}/admin/dashboard" class="button">Admin Dashboard</a>
+            <% } %>
             <a href="${pageContext.request.contextPath}/logout" class="button secondary">Sign Out</a>
+        </div>
+
+        <div class="recent-activities">
+            <h3>Recent Activities</h3>
+            <%
+                ArrayList<GalleryItem> recentActivities = (ArrayList<GalleryItem>) request.getAttribute("recentActivities");
+                if (recentActivities != null && !recentActivities.isEmpty()) {
+            %>
+            <div class="activity-list">
+                <% for(GalleryItem activity: recentActivities) { %>
+                    <div class="activity-item">
+                        <img src="${pageContext.request.contextPath}/imagedisplay?id=<%=activity.getId()%>"
+                             alt="<%=activity.getTitle()%>" class="activity-thumbnail">
+                        <div class="activity-info">
+                            <p class="activity-title"><%=activity.getTitle()%></p>
+                            <p class="activity-user">by <%=activity.getUserName()%></p>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+            <% } else { %>
+                <p>No recent activities</p>
+            <% } %>
         </div>
 
         <%

@@ -598,14 +598,60 @@ table img {
 /* Activity List */
 .activity-list {
     margin-top: var(--spacing-md);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-md);
 }
 
 .activity-item {
-    padding: var(--spacing-md) 0;
-    border-bottom: 1px solid var(--border);
+    padding: var(--spacing-md);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
     display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xs);
+    align-items: center;
+    gap: var(--spacing-md);
+    background: var(--background);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.activity-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.activity-thumbnail {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+}
+
+.activity-info {
+    flex: 1;
+}
+
+.activity-title {
+    color: var(--text);
+    font-weight: 500;
+    margin-bottom: var(--spacing-xs);
+}
+
+.activity-user {
+    color: var(--text-light);
+    font-size: var(--font-size-sm);
+}
+
+.recent-activities {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin: var(--spacing-xl) 0;
+}
+
+.recent-activities h3 {
+    color: var(--text);
+    margin-bottom: var(--spacing-lg);
+    text-align: left;
 }
 
 .activity-item:last-child {

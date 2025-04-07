@@ -40,4 +40,13 @@ public class GalleryService {
         }
         return false;
     }
+
+    public static ArrayList<GalleryItem> getRecentActivities(int limit) {
+        try {
+            return (ArrayList<GalleryItem>) GalleryItemDAO.getRecentActivities(limit);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        return new ArrayList<>();
+    }
 }

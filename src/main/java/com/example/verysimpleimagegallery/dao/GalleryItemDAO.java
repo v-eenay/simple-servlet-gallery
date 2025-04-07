@@ -126,4 +126,24 @@ public class GalleryItemDAO {
         }
         return null;
     }
+
+    public static List<GalleryItem> getRecentActivities(int limit) {
+        List<GalleryItem> items = new ArrayList<>();
+        String sql = "SELECT gi.id, gi.title, gi.image, gi.user_id, u.full_name, gi.created_at " +
+                    "FROM gallery_items gi " +
+                    "JOIN users u ON gi.user_id = u.id " +
+                    "ORDER BY gi.created_at DESC LIMIT ?";
+        try (Connection conn = DbConnectionUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, limit);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                GalleryItem item = createGalleryItemFromResultSet(rs);
+                items.add(item);
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return items;
+    }
 }
