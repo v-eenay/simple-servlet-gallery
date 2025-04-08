@@ -85,19 +85,42 @@
         </div>
         
         <div class="dashboard-section mt-lg">
-            <h3>Recent Activity</h3>
-            <div class="activity-list">
-                <div class="activity-item">
-                    <div class="activity-time">Today, 14:32</div>
-                    <div class="activity-content">User <strong>john@example.com</strong> uploaded a new image</div>
+            <div class="admin-content">
+                <h3>Dashboard Overview</h3>
+                <p>Welcome to your admin dashboard. From here you can manage users, gallery items, and monitor system activity.</p>
+                
+                <div class="quick-actions">
+                    <h4>Quick Actions</h4>
+                    <div class="action-buttons">
+                        <a href="${pageContext.request.contextPath}/admin/list-users" class="button">Manage Users</a>
+                        <a href="${pageContext.request.contextPath}/admin/gallery" class="button">Manage Gallery</a>
+                    </div>
                 </div>
-                <div class="activity-item">
-                    <div class="activity-time">Today, 12:15</div>
-                    <div class="activity-content">User <strong>sarah@example.com</strong> registered</div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-time">Yesterday, 18:42</div>
-                    <div class="activity-content">Admin <strong>admin@example.com</strong> deleted an image</div>
+            </div>
+            
+            <div class="recent-activities">
+                <h3>Recent Activity Log</h3>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-time">Today, 14:32</div>
+                        <div class="activity-content">User <strong>john@example.com</strong> uploaded a new image</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-time">Today, 12:15</div>
+                        <div class="activity-content">User <strong>sarah@example.com</strong> registered</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-time">Yesterday, 18:42</div>
+                        <div class="activity-content">Admin <strong>admin@example.com</strong> deleted an image</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-time">Yesterday, 15:10</div>
+                        <div class="activity-content">System maintenance completed</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-time">2 days ago</div>
+                        <div class="activity-content">User <strong>mike@example.com</strong> updated profile</div>
+                    </div>
                 </div>
             </div>
         </div>

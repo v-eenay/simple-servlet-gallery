@@ -34,52 +34,54 @@
         <h1 class="gallery-title">Image Gallery</h1>
         <h2 class="gallery-subtitle"><%=user.getFullName()%>'s Collection</h2>
 
-        <div class="recent-activities">
-            <h3>Recent Activities</h3>
-            <%
-                ArrayList<GalleryItem> recentActivities = (ArrayList<GalleryItem>) request.getAttribute("recentActivities");
-                if (recentActivities != null && !recentActivities.isEmpty()) {
-            %>
-            <div class="activity-list">
-                <% for(GalleryItem activity: recentActivities) { %>
-                    <div class="activity-item">
-                        <img src="${pageContext.request.contextPath}/imagedisplay?id=<%=activity.getId()%>"
-                             alt="<%=activity.getTitle()%>" class="activity-thumbnail">
-                        <div class="activity-info">
-                            <p class="activity-title"><%=activity.getTitle()%></p>
-                            <p class="activity-user">by <%=activity.getUserName()%></p>
+        <div class="dashboard-section">
+            <div class="gallery-content">
+                <%
+                    ArrayList<GalleryItem> galleryItems = (ArrayList<GalleryItem>) request.getAttribute("galleryItems");
+                    if (galleryItems != null && !galleryItems.isEmpty()) {
+                %>
+                <div class="gallery-grid">
+                    <% for(GalleryItem galleryItem: galleryItems) { %>
+                        <div class="gallery-item">
+                            <img src="${pageContext.request.contextPath}/imagedisplay?id=<%=galleryItem.getId()%>" alt="<%=galleryItem.getTitle()%>">
+                            <div class="item-info">
+                                <h3 class="item-title"><%=galleryItem.getTitle()%></h3>
+                            </div>
+                            <div class="item-actions">
+                                <a href="${pageContext.request.contextPath}/deleteimage?id=<%=galleryItem.getId()%>" class="button secondary">Delete</a>
+                            </div>
                         </div>
+                    <% } %>
+                </div>
+                <% } else { %>
+                    <div class="message">
+                        <p>You haven't uploaded any images yet.</p>
+                        <p>Get started by clicking "Upload Image" above.</p>
                     </div>
                 <% } %>
             </div>
-            <% } else { %>
-                <p>No recent activities</p>
-            <% } %>
-        </div>
-
-        <%
-            ArrayList<GalleryItem> galleryItems = (ArrayList<GalleryItem>) request.getAttribute("galleryItems");
-            if (galleryItems != null && !galleryItems.isEmpty()) {
-        %>
-        <div class="gallery-grid">
-            <% for(GalleryItem galleryItem: galleryItems) { %>
-                <div class="gallery-item">
-                    <img src="${pageContext.request.contextPath}/imagedisplay?id=<%=galleryItem.getId()%>" alt="<%=galleryItem.getTitle()%>">
-                    <div class="item-info">
-                        <h3 class="item-title"><%=galleryItem.getTitle()%></h3>
-                    </div>
-                    <div class="item-actions">
-                        <a href="${pageContext.request.contextPath}/deleteimage?id=<%=galleryItem.getId()%>" class="button secondary">Delete</a>
-                    </div>
+            
+            <div class="recent-activities">
+                <h3>Recent Activity Log</h3>
+                <%
+                    ArrayList<GalleryItem> recentActivities = (ArrayList<GalleryItem>) request.getAttribute("recentActivities");
+                    if (recentActivities != null && !recentActivities.isEmpty()) {
+                %>
+                <div class="activity-list">
+                    <% for(GalleryItem activity: recentActivities) { %>
+                        <div class="activity-item">
+                            <div class="activity-time">Recent</div>
+                            <div class="activity-content">
+                                <strong><%=activity.getTitle()%></strong> uploaded by <%=activity.getUserName()%>
+                            </div>
+                        </div>
+                    <% } %>
                 </div>
-            <% } %>
-        </div>
-        <% } else { %>
-            <div class="message">
-                <p>You haven't uploaded any images yet.</p>
-                <p>Get started by clicking "Upload Image" above.</p>
+                <% } else { %>
+                    <p>No recent activities</p>
+                <% } %>
             </div>
-        <% } %>
+        </div>
     </div>
     <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
 </body>
