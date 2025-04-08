@@ -63,9 +63,7 @@ public class AuthService {
         if (currentUser.isSuperAdmin()) return true;
         
         // Regular admin can only delete regular users
-        if (currentUser.isAdmin() && targetUser.isRegularUser()) return true;
-        
-        return false;
+        return currentUser.isAdmin() && targetUser.isRegularUser();
     }
     
     public static boolean canUploadImages(User user) {
@@ -80,13 +78,10 @@ public class AuthService {
         if (currentUser.getId() == imageOwner.getId()) return true;
         
         // Admin users can delete any image
-        if (currentUser.hasAdminPermissions()) return true;
-        
-        return false;
+        return currentUser.hasAdminPermissions();
     }
     
     public static boolean canViewAllImages(User user) {
-        if (user == null) return false;
-        return user.hasAdminPermissions();
+        return hasAdminAccess(user);
     }
 }

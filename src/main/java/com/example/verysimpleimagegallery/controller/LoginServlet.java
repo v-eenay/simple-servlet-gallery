@@ -35,15 +35,13 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("user", user);
             session.setAttribute("isLoggedIn", true);
             if(user.isRegularUser()){
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp?loginerror=false");
-            dispatcher.forward(request, response);}
-            else if (user.isAdmin()) {
-                 RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/view/admin/admin-dashboard.jsp?loginerror=false");
-                 dispatcher.forward(request, response);
-            }
-            else {
-                RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/view/admin/admin-dashboard.jsp?loginerror=false");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp?loginerror=false");
                 dispatcher.forward(request, response);
+            }
+            else if (user.isAdmin() || user.isSuperAdmin()) {
+                // Use sendRedirect instead of forward for admin dashboard
+                // This ensures a new request is made and AdminDashboardServlet properly loads all data
+                response.sendRedirect(request.getContextPath() + "/admin/dashboard?loginerror=false");
             }
         } else {
             // Login failed
