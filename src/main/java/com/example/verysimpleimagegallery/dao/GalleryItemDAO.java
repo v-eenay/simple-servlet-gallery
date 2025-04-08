@@ -30,8 +30,13 @@ public class GalleryItemDAO {
             ps.setBytes(2, item.getImage());
             ps.setInt(3, item.getUserId());
             
-            if (ps.executeUpdate() > 0 && ps.getGeneratedKeys().next()) {
-                return ps.getGeneratedKeys().getInt(1);
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1);
+                    }
+                }
             }
         } catch (SQLException e) {
             System.err.println("Error adding gallery item: " + e.getMessage());
