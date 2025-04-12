@@ -130,56 +130,146 @@
         </div>
     </div>
 
-    <!-- Immediate fix for initialization messages -->
+    <!-- Custom script for gallery page - completely bypassing the standard script.js -->
     <script>
-        // Immediately remove any "Activity logging system initialized" messages
-        (function() {
-            function removeInitMessages() {
-                const messages = document.querySelectorAll('.message');
-                messages.forEach(message => {
-                    if (message.textContent.includes('Activity logging system initialized')) {
-                        if (message.parentNode) {
-                            message.parentNode.removeChild(message);
-                        }
-                    }
-                });
+    // Immediately remove any existing messages
+    (function() {
+        // Remove all messages regardless of content
+        const messages = document.querySelectorAll('.message');
+        messages.forEach(message => {
+            if (message.parentNode) {
+                message.parentNode.removeChild(message);
+            }
+        });
+    })();
+
+    // Define minimal required functions without activity logging
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize only what we need for this page
+        initGalleryItemsForThisPage();
+        initMessageDismissal();
+        addRetroEffects();
+
+        // Remove any messages that might have appeared
+        const messages = document.querySelectorAll('.message');
+        messages.forEach(message => {
+            if (message.parentNode) {
+                message.parentNode.removeChild(message);
+            }
+        });
+    });
+
+    // Simplified gallery initialization just for this page
+    function initGalleryItemsForThisPage() {
+        const galleryItems = document.querySelectorAll('.gallery-item');
+
+        if (galleryItems.length === 0) return;
+
+        galleryItems.forEach(item => {
+            const img = item.querySelector('img');
+
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.02)';
+                this.style.transition = 'all 0.5s ease';
+                if (img) {
+                    img.style.filter = 'brightness(1.05)';
+                    img.style.transition = 'all 0.5s ease';
+                }
+            });
+
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.transition = 'all 0.5s ease';
+                if (img) {
+                    img.style.filter = 'brightness(1)';
+                    img.style.transition = 'all 0.5s ease';
+                }
+            });
+        });
+    }
+
+    // Simplified message dismissal function
+    function initMessageDismissal() {
+        // Track active messages
+        window.activeMessages = [];
+
+        // Function to dismiss a message
+        window.dismissMessage = function(message) {
+            message.style.opacity = '0';
+            message.style.transform = 'translate(-50%, -20px)';
+
+            setTimeout(() => {
+                if (message.parentNode) {
+                    message.parentNode.removeChild(message);
+                }
+
+                // Remove from active messages
+                const index = window.activeMessages.indexOf(message);
+                if (index > -1) {
+                    window.activeMessages.splice(index, 1);
+                }
+            }, 400);
+        };
+
+        // Simplified notification function that doesn't log activities
+        window.showNotification = function(message, type = 'info') {
+            // Skip all initialization messages
+            if (message.includes('initialized') || message.includes('Activity logging')) {
+                return null;
             }
 
-            // Run immediately
-            removeInitMessages();
+            const notificationElement = document.createElement('div');
+            notificationElement.className = `message ${type}`;
+            notificationElement.textContent = message;
 
-            // Also run after a short delay to catch any that might appear after page load
-            setTimeout(removeInitMessages, 100);
-            setTimeout(removeInitMessages, 500);
-            setTimeout(removeInitMessages, 1000);
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'message-close';
+            closeBtn.innerHTML = '&times;';
+            closeBtn.setAttribute('aria-label', 'Dismiss message');
 
-            // Override the logUserActivity function to prevent initialization messages
-            if (window.logUserActivity) {
-                const originalLogUserActivity = window.logUserActivity;
-                window.logUserActivity = function(activity, type) {
-                    if (activity === 'Activity logging system initialized') {
-                        return; // Skip initialization messages
-                    }
-                    return originalLogUserActivity(activity, type);
-                };
-            }
+            notificationElement.appendChild(closeBtn);
+            document.body.appendChild(notificationElement);
 
-            // Override the showNotification function to prevent initialization messages
-            if (window.showNotification) {
-                const originalShowNotification = window.showNotification;
-                window.showNotification = function(message, type) {
-                    if (message === 'Activity logging system initialized') {
-                        return null; // Skip initialization messages
-                    }
-                    return originalShowNotification(message, type);
-                };
-            }
-        })();
+            closeBtn.addEventListener('click', function() {
+                window.dismissMessage(notificationElement);
+            });
+
+            // Auto-dismiss all messages
+            setTimeout(() => {
+                window.dismissMessage(notificationElement);
+            }, 3000);
+
+            return notificationElement;
+        };
+
+        // Empty stub for logUserActivity that does nothing
+        window.logUserActivity = function() {
+            // Do nothing - completely disabled
+            return;
+        };
+    }
+
+    // Simplified retro effects
+    function addRetroEffects() {
+        const buttons = document.querySelectorAll('.button');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.transition = 'all 0.5s ease';
+                this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+            });
+
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+                this.style.transition = 'all 0.5s ease';
+                this.style.boxShadow = '';
+            });
+        });
+    }
     </script>
 
-    <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
+    <!-- Lightbox functionality -->
     <script>
-        // Lightbox functionality
         function openLightbox(imageId, imageTitle) {
             const lightbox = document.getElementById('imageLightbox');
             const lightboxImage = document.getElementById('lightboxImage');
@@ -210,19 +300,6 @@
             if (e.key === 'Escape' && document.getElementById('imageLightbox').classList.contains('active')) {
                 closeLightbox();
             }
-        });
-
-        // Run one more time after everything is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            // Remove any initialization messages that might have appeared
-            const messages = document.querySelectorAll('.message');
-            messages.forEach(message => {
-                if (message.textContent.includes('Activity logging system initialized')) {
-                    if (message.parentNode) {
-                        message.parentNode.removeChild(message);
-                    }
-                }
-            });
         });
     </script>
 </body>
