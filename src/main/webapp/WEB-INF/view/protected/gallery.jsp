@@ -131,10 +131,32 @@
         </div>
     </div>
 
+    <!-- Define lightbox functions first, before the HTML that uses them -->
+    <script>
+    // Lightbox functionality
+    function openLightbox(imageId, imageTitle) {
+        const lightbox = document.getElementById('imageLightbox');
+        const lightboxImage = document.getElementById('lightboxImage');
+        const lightboxTitle = document.getElementById('lightboxTitle');
+
+        lightboxImage.src = '${pageContext.request.contextPath}/imagedisplay?id=' + imageId;
+        lightboxTitle.textContent = imageTitle;
+
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is open
+    }
+
+    function closeLightbox() {
+        const lightbox = document.getElementById('imageLightbox');
+        lightbox.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+    </script>
+
     <!-- Lightbox for image preview -->
     <div id="imageLightbox" class="lightbox">
         <div class="lightbox-content">
-            <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+            <button class="lightbox-close" id="lightboxCloseBtn">&times;</button>
             <img id="lightboxImage" src="" alt="">
             <h3 id="lightboxTitle" class="lightbox-title"></h3>
         </div>
@@ -144,6 +166,25 @@
     <script>
     // Standalone gallery page script - no dependencies on script.js
     document.addEventListener('DOMContentLoaded', function() {
+        // Set up lightbox close button
+        document.getElementById('lightboxCloseBtn').addEventListener('click', function() {
+            closeLightbox();
+        });
+
+        // Close lightbox when clicking outside the image
+        document.getElementById('imageLightbox').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLightbox();
+            }
+        });
+
+        // Close lightbox with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('imageLightbox').classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+
         // Add hover effects to gallery items
         const galleryItems = document.querySelectorAll('.gallery-item');
         galleryItems.forEach(item => {
@@ -182,41 +223,6 @@
                 this.style.transition = 'all 0.3s ease';
                 this.style.boxShadow = '';
             });
-        });
-    });
-
-    // Lightbox functionality
-    function openLightbox(imageId, imageTitle) {
-        const lightbox = document.getElementById('imageLightbox');
-        const lightboxImage = document.getElementById('lightboxImage');
-        const lightboxTitle = document.getElementById('lightboxTitle');
-
-        lightboxImage.src = '${pageContext.request.contextPath}/imagedisplay?id=' + imageId;
-        lightboxTitle.textContent = imageTitle;
-
-        lightbox.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is open
-    }
-
-    function closeLightbox() {
-        const lightbox = document.getElementById('imageLightbox');
-        lightbox.classList.remove('active');
-        document.body.style.overflow = ''; // Restore scrolling
-    }
-
-    // Close lightbox when clicking outside the image
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('imageLightbox').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeLightbox();
-            }
-        });
-
-        // Close lightbox with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && document.getElementById('imageLightbox').classList.contains('active')) {
-                closeLightbox();
-            }
         });
     });
     </script>
