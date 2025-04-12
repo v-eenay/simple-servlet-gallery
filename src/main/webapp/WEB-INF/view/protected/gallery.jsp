@@ -130,6 +130,53 @@
         </div>
     </div>
 
+    <!-- Immediate fix for initialization messages -->
+    <script>
+        // Immediately remove any "Activity logging system initialized" messages
+        (function() {
+            function removeInitMessages() {
+                const messages = document.querySelectorAll('.message');
+                messages.forEach(message => {
+                    if (message.textContent.includes('Activity logging system initialized')) {
+                        if (message.parentNode) {
+                            message.parentNode.removeChild(message);
+                        }
+                    }
+                });
+            }
+
+            // Run immediately
+            removeInitMessages();
+
+            // Also run after a short delay to catch any that might appear after page load
+            setTimeout(removeInitMessages, 100);
+            setTimeout(removeInitMessages, 500);
+            setTimeout(removeInitMessages, 1000);
+
+            // Override the logUserActivity function to prevent initialization messages
+            if (window.logUserActivity) {
+                const originalLogUserActivity = window.logUserActivity;
+                window.logUserActivity = function(activity, type) {
+                    if (activity === 'Activity logging system initialized') {
+                        return; // Skip initialization messages
+                    }
+                    return originalLogUserActivity(activity, type);
+                };
+            }
+
+            // Override the showNotification function to prevent initialization messages
+            if (window.showNotification) {
+                const originalShowNotification = window.showNotification;
+                window.showNotification = function(message, type) {
+                    if (message === 'Activity logging system initialized') {
+                        return null; // Skip initialization messages
+                    }
+                    return originalShowNotification(message, type);
+                };
+            }
+        })();
+    </script>
+
     <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
     <script>
         // Lightbox functionality
@@ -163,6 +210,19 @@
             if (e.key === 'Escape' && document.getElementById('imageLightbox').classList.contains('active')) {
                 closeLightbox();
             }
+        });
+
+        // Run one more time after everything is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Remove any initialization messages that might have appeared
+            const messages = document.querySelectorAll('.message');
+            messages.forEach(message => {
+                if (message.textContent.includes('Activity logging system initialized')) {
+                    if (message.parentNode) {
+                        message.parentNode.removeChild(message);
+                    }
+                }
+            });
         });
     </script>
 </body>

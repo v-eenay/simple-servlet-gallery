@@ -23,6 +23,48 @@ function clearInitializationMessages() {
             }
         }
     });
+
+    // Set up a MutationObserver to catch any new messages that might be added
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                for (let i = 0; i < mutation.addedNodes.length; i++) {
+                    const node = mutation.addedNodes[i];
+                    // Check if the added node is a message with the initialization text
+                    if (node.classList && node.classList.contains('message')) {
+                        if (node.textContent.includes('Activity logging system initialized')) {
+                            if (node.parentNode) {
+                                node.parentNode.removeChild(node);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+
+    // Start observing the document body for changes
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Also set up periodic checks
+    const intervalId = setInterval(function() {
+        const messages = document.querySelectorAll('.message');
+        let found = false;
+
+        messages.forEach(message => {
+            if (message.textContent.includes('Activity logging system initialized')) {
+                found = true;
+                if (message.parentNode) {
+                    message.parentNode.removeChild(message);
+                }
+            }
+        });
+
+        // If no messages were found after 5 seconds, stop checking
+        if (!found && document.readyState === 'complete') {
+            clearInterval(intervalId);
+        }
+    }, 500);
 }
 
 function initImageUpload() {
