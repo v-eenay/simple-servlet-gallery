@@ -107,17 +107,34 @@
                         List<ActivityLog> activityLogs = (List<ActivityLog>) request.getAttribute("activityLogs");
                         if (activityLogs != null && !activityLogs.isEmpty()) {
                             for (ActivityLog log : activityLogs) {
+                                String activityTypeClass = log.getActivityType() != null ? "activity-" + log.getActivityType() : "";
                     %>
-                    <div class="activity-item <%= log.getActivityType() != null ? "activity-" + log.getActivityType() : "" %>">
-                        <div class="activity-time"><%= log.getFormattedTime() %></div>
-                        <div class="activity-content"><%= log.getActivity() %> by <strong><%= log.getUserName() %></strong></div>
+                    <div class="activity-item <%= activityTypeClass %>">
+                        <% if (log.getActivityType() != null && log.getActivityType().equals("upload")) { %>
+                            <div class="activity-icon">📷</div>
+                        <% } else if (log.getActivityType() != null && log.getActivityType().equals("login")) { %>
+                            <div class="activity-icon">🔑</div>
+                        <% } else if (log.getActivityType() != null && log.getActivityType().equals("admin")) { %>
+                            <div class="activity-icon">👑</div>
+                        <% } else if (log.getActivityType() != null && log.getActivityType().equals("system")) { %>
+                            <div class="activity-icon">⚙️</div>
+                        <% } else { %>
+                            <div class="activity-icon">📝</div>
+                        <% } %>
+                        <div class="activity-details">
+                            <div class="activity-time"><%= log.getFormattedTime() %></div>
+                            <div class="activity-content"><%= log.getActivity() %> by <strong><%= log.getUserName() %></strong></div>
+                        </div>
                     </div>
                     <%
                             }
                         } else {
                     %>
                     <div class="activity-item">
-                        <div class="activity-content">No recent activities found</div>
+                        <div class="activity-icon">❓</div>
+                        <div class="activity-details">
+                            <div class="activity-content">No recent activities found</div>
+                        </div>
                     </div>
                     <%
                         }

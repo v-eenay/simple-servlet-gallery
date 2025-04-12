@@ -1,7 +1,9 @@
 package com.example.verysimpleimagegallery.controller;
 
+import com.example.verysimpleimagegallery.model.ActivityLog;
 import com.example.verysimpleimagegallery.model.GalleryItem;
 import com.example.verysimpleimagegallery.model.User;
+import com.example.verysimpleimagegallery.service.ActivityLogService;
 import com.example.verysimpleimagegallery.service.GalleryService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -9,6 +11,7 @@ import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Servlet responsible for displaying the home page with recent activities.
@@ -36,6 +39,13 @@ public class HomeServlet extends HttpServlet {
         // Get recent activities across all users
         ArrayList<GalleryItem> recentActivities = GalleryService.getRecentActivities(RECENT_ACTIVITIES_LIMIT);
         request.setAttribute("recentActivities", recentActivities);
+
+        // Ensure there's at least one activity log for display purposes
+        ActivityLogService.createSampleActivityLogIfNeeded(user.getId());
+
+        // Get recent activity logs
+        List<ActivityLog> activityLogs = ActivityLogService.getRecentActivityLogs(RECENT_ACTIVITIES_LIMIT);
+        request.setAttribute("activityLogs", activityLogs);
 
         // Check for success or error messages from redirects
         String success = request.getParameter("success");

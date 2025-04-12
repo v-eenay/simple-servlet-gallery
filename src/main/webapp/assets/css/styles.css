@@ -570,6 +570,22 @@ input[type="file"] {
     gap: var(--space-sm);
 }
 
+.activity-icon {
+    font-size: 1.2rem;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.activity-details {
+    flex: 1;
+}
+
 .activity-thumbnail {
     width: 40px;
     height: 40px;
@@ -913,6 +929,12 @@ input[type="file"] {
     color: rgba(0, 0, 0, 0.6);
     border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
+
+/* Utility classes */
+.mt-sm { margin-top: var(--space-sm); }
+.mt-md { margin-top: var(--space-md); }
+.mt-lg { margin-top: var(--space-lg); }
+.mt-xl { margin-top: var(--space-xl); }
 
 @media (max-width: 768px) {
     h1 {

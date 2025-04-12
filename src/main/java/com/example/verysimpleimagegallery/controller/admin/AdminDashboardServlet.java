@@ -1,5 +1,6 @@
 package com.example.verysimpleimagegallery.controller.admin;
 
+import com.example.verysimpleimagegallery.dao.ActivityLogDAO;
 import com.example.verysimpleimagegallery.dao.GalleryItemDAO;
 import com.example.verysimpleimagegallery.dao.UserDAO;
 import com.example.verysimpleimagegallery.model.ActivityLog;
@@ -39,8 +40,15 @@ public class AdminDashboardServlet extends HttpServlet {
         int adminCount = UserDAO.getAdminCount();
         int imageCount = GalleryItemDAO.getImageCount();
 
+        // Ensure there's at least one activity log for display purposes
+        ActivityLogService.createSampleActivityLogIfNeeded(currentUser.getId());
+
         // Get recent activity logs
         List<ActivityLog> activityLogs = ActivityLogService.getRecentActivityLogs(ACTIVITY_LOG_LIMIT);
+
+        // Debug information
+        System.out.println("Activity logs found: " + (activityLogs != null ? activityLogs.size() : 0));
+        System.out.println("Total activity logs in database: " + ActivityLogDAO.getActivityLogCount());
 
         // Set attributes to be used in the JSP
         request.setAttribute("totalUsers", totalUsers);
