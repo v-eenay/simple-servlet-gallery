@@ -225,13 +225,9 @@ function initGalleryAnimations() {
         }
     };
 
-    // Add a test activity log if we're on the admin dashboard
-    if (document.querySelector('.recent-activities')) {
-        // Only add this if we're on a page with the activity list
-        setTimeout(() => {
-            window.logUserActivity('Activity logging system initialized', 'info');
-        }, 1000);
-    }
+    // We no longer need to show the initialization message
+    // It was causing issues by covering the screen
+    // The activity logging system will still work without this message
 }
 
 function openLightbox(src, title) {
@@ -298,9 +294,28 @@ function initMessageDismissal() {
     // Track active messages to position them properly
     window.activeMessages = [];
 
+    // Get all existing messages on the page
     const messages = document.querySelectorAll('.message');
 
-    messages.forEach(message => {
+    // If there are too many messages (more than 2), keep only the most recent ones
+    if (messages.length > 2) {
+        // Sort messages by their position in the DOM (most recent first)
+        const sortedMessages = Array.from(messages).sort((a, b) => {
+            // Compare their positions in the document
+            return a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_PRECEDING ? 1 : -1;
+        });
+
+        // Keep only the first 2 messages, remove the rest
+        sortedMessages.slice(2).forEach(msg => {
+            if (msg.parentNode) {
+                msg.parentNode.removeChild(msg);
+            }
+        });
+    }
+
+    // Process remaining messages
+    const remainingMessages = document.querySelectorAll('.message');
+    remainingMessages.forEach(message => {
         // Only add close button if it doesn't already exist
         if (!message.querySelector('.message-close')) {
             const closeBtn = document.createElement('button');
@@ -320,15 +335,18 @@ function initMessageDismissal() {
 
         // Add to active messages
         window.activeMessages.push(message);
-        updateMessagePositions();
 
-        // Auto-dismiss success messages
-        if (message.classList.contains('success')) {
+        // Auto-dismiss success and info messages
+        if (message.classList.contains('success') || message.classList.contains('info')) {
+            const timeout = message.classList.contains('success') ? 5000 : 3000;
             setTimeout(() => {
                 dismissMessage(message);
-            }, 5000);
+            }, timeout);
         }
     });
+
+    // Update positions after processing all messages
+    updateMessagePositions();
 
     // Function to dismiss a message and update positions
     function dismissMessage(message) {
