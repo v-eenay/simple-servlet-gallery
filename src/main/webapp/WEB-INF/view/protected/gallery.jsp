@@ -51,8 +51,12 @@
         .upload-user { font-style: italic; color: #3498db; }
         /* Hide any messages that might appear */
         .message { display: none !important; }
-        .lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.4s ease; }
-        .lightbox.active { opacity: 1; }
+        /* Lightbox styles */
+        #imageLightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.4s ease; }
+        #imageLightbox.active { opacity: 1; }
+        .lightbox-content { position: relative; max-width: 80%; max-height: 80%; }
+        .lightbox-close { position: absolute; top: -30px; right: -30px; background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+        .lightbox-title { color: white; text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -154,7 +158,7 @@
     </script>
 
     <!-- Lightbox for image preview -->
-    <div id="imageLightbox" class="lightbox">
+    <div id="imageLightbox">
         <div class="lightbox-content">
             <button class="lightbox-close" id="lightboxCloseBtn">&times;</button>
             <img id="lightboxImage" src="" alt="">
