@@ -6,6 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page import="com.example.verysimpleimagegallery.model.User" %>
+<%@ page import="com.example.verysimpleimagegallery.model.ActivityLog" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -18,11 +20,11 @@
         <%
             User user = (User) session.getAttribute("user");
             String username = user.getFullName();
-            
+
             Integer totalUsers = (Integer) request.getAttribute("totalUsers");
             Integer adminCount = (Integer) request.getAttribute("adminCount");
             Integer imageCount = (Integer) request.getAttribute("imageCount");
-            
+
             String error = request.getParameter("error");
             if (error == null) {
                 error = (String) request.getAttribute("error");
@@ -33,7 +35,7 @@
         <%
             }
         %>
-        
+
         <%
             String message = request.getParameter("message");
             if (message == null) {
@@ -45,26 +47,26 @@
         <%
             }
         %>
-        
+
         <h1>Admin Dashboard</h1>
         <h2>Welcome, <%=username%></h2>
-        
+
         <div class="admin-stats">
             <div class="stat-card">
                 <div class="stat-number"><%=totalUsers != null ? totalUsers : 0%></div>
                 <div class="stat-title">Total Users</div>
             </div>
-            
+
             <div class="stat-card">
                 <div class="stat-number"><%=adminCount != null ? adminCount : 0%></div>
                 <div class="stat-title">Admins</div>
             </div>
-            
+
             <div class="stat-card">
                 <div class="stat-number"><%=totalUsers != null && adminCount != null ? (totalUsers - adminCount) : 0%></div>
                 <div class="stat-title">Regular Users</div>
             </div>
-            
+
             <div class="stat-card">
                 <div class="stat-number"><%=imageCount != null ? imageCount : 0%></div>
                 <div class="stat-title">Total Images</div>
@@ -83,12 +85,12 @@
             <% } %>
             <a href="${pageContext.request.contextPath}/logout" class="button secondary">Sign Out</a>
         </div>
-        
+
         <div class="dashboard-section mt-lg">
             <div class="admin-content">
                 <h3>Dashboard Overview</h3>
                 <p>Welcome to your admin dashboard. From here you can manage users, gallery items, and monitor system activity.</p>
-                
+
                 <div class="quick-actions">
                     <h4>Quick Actions</h4>
                     <div class="action-buttons">
@@ -97,30 +99,29 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="recent-activities">
                 <h3>Recent Activity Log</h3>
                 <div class="activity-list">
-                    <div class="activity-item">
-                        <div class="activity-time">Today, 14:32</div>
-                        <div class="activity-content">User <strong>john@example.com</strong> uploaded a new image</div>
+                    <%
+                        List<ActivityLog> activityLogs = (List<ActivityLog>) request.getAttribute("activityLogs");
+                        if (activityLogs != null && !activityLogs.isEmpty()) {
+                            for (ActivityLog log : activityLogs) {
+                    %>
+                    <div class="activity-item <%= log.getActivityType() != null ? "activity-" + log.getActivityType() : "" %>">
+                        <div class="activity-time"><%= log.getFormattedTime() %></div>
+                        <div class="activity-content"><%= log.getActivity() %> by <strong><%= log.getUserName() %></strong></div>
                     </div>
+                    <%
+                            }
+                        } else {
+                    %>
                     <div class="activity-item">
-                        <div class="activity-time">Today, 12:15</div>
-                        <div class="activity-content">User <strong>sarah@example.com</strong> registered</div>
+                        <div class="activity-content">No recent activities found</div>
                     </div>
-                    <div class="activity-item">
-                        <div class="activity-time">Yesterday, 18:42</div>
-                        <div class="activity-content">Admin <strong>admin@example.com</strong> deleted an image</div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-time">Yesterday, 15:10</div>
-                        <div class="activity-content">System maintenance completed</div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-time">2 days ago</div>
-                        <div class="activity-content">User <strong>mike@example.com</strong> updated profile</div>
-                    </div>
+                    <%
+                        }
+                    %>
                 </div>
             </div>
         </div>

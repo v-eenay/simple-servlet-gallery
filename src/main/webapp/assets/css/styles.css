@@ -605,6 +605,27 @@ input[type="file"] {
     background-color: rgba(52, 152, 219, 0.05);
 }
 
+/* Activity type specific styles */
+.activity-item.activity-upload {
+    border-left: 3px solid #27ae60;
+}
+
+.activity-item.activity-delete {
+    border-left: 3px solid #e74c3c;
+}
+
+.activity-item.activity-login {
+    border-left: 3px solid #3498db;
+}
+
+.activity-item.activity-admin {
+    border-left: 3px solid #9b59b6;
+}
+
+.activity-item.activity-register {
+    border-left: 3px solid #f39c12;
+}
+
 .activity-item:hover {
     background-color: rgba(0, 0, 0, 0.04);
     transform: translateX(2px);

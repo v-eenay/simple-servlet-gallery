@@ -22,3 +22,13 @@ CREATE TABLE IF NOT EXISTS gallery_items (
                                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Track when gallery item was last updated
                                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE -- Ensure gallery items are deleted if the user is deleted
 );
+
+-- Create the activity_logs table to track user activities
+CREATE TABLE IF NOT EXISTS activity_logs (
+                              id INT AUTO_INCREMENT PRIMARY KEY,   -- Auto increment the activity log ID
+                              activity VARCHAR(255) NOT NULL,       -- Description of the activity
+                              activity_type VARCHAR(50),            -- Type of activity (upload, delete, login, etc.)
+                              user_id INT,                          -- Foreign key to link the activity to a user
+                              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,   -- Track when the activity occurred
+                              FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE -- Ensure logs are deleted if the user is deleted
+);

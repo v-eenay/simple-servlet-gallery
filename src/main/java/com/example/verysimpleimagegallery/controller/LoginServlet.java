@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import com.example.verysimpleimagegallery.model.User;
+import com.example.verysimpleimagegallery.service.ActivityLogService;
 import com.example.verysimpleimagegallery.service.AuthService;
 
 @WebServlet(name = "LoginServlet", value = "/login")
@@ -34,6 +35,18 @@ public class LoginServlet extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
             session.setAttribute("isLoggedIn", true);
+
+            // Log the login activity
+            String userType = "User";
+            if (user.isAdmin()) userType = "Admin";
+            if (user.isSuperAdmin()) userType = "Super Admin";
+
+            ActivityLogService.logActivity(
+                userType + " login: " + user.getEmail(),
+                "login",
+                user.getId()
+            );
+
             if(user.isRegularUser()){
                 response.sendRedirect(request.getContextPath() + "/home?loginerror=false");
             }
