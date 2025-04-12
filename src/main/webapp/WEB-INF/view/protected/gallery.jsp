@@ -168,6 +168,7 @@
         galleryItems.forEach(item => {
             const img = item.querySelector('img');
 
+            // Only add hover effects, don't interfere with the onclick attribute
             item.addEventListener('mouseenter', function() {
                 this.style.transform = 'scale(1.02)';
                 this.style.transition = 'all 0.5s ease';
@@ -185,6 +186,14 @@
                     img.style.transition = 'all 0.5s ease';
                 }
             });
+
+            // Make sure the delete button works
+            const deleteBtn = item.querySelector('.button.secondary');
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent triggering the parent's onclick
+                });
+            }
         });
     }
 
