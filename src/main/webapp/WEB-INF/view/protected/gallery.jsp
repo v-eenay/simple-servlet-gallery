@@ -40,9 +40,23 @@
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: all 0.3s ease; }
         .item-info { padding: 1rem; }
         .item-title { margin: 0; font-size: 1.1rem; color: #1d1d1d; }
-        .recent-activities { background-color: #fefefe; border-radius: 2px; padding: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); max-height: 450px; overflow: hidden; display: flex; flex-direction: column; border-top: 3px solid #2c3e50; position: relative; }
-        .lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.4s ease; }
-        .lightbox.active { opacity: 1; }
+        .recent-uploads { background-color: #fefefe; border-radius: 2px; padding: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); max-height: 450px; overflow: hidden; display: flex; flex-direction: column; border-top: 3px solid #2c3e50; position: relative; }
+        .recent-uploads-list { overflow-y: auto; }
+        .recent-upload-item { display: flex; padding: 0.5rem; margin-bottom: 0.5rem; background-color: rgba(0,0,0,0.02); border-radius: 2px; transition: all 0.3s ease; }
+        .upload-thumbnail { width: 50px; height: 50px; overflow: hidden; margin-right: 0.5rem; }
+        .upload-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+        .upload-details { flex: 1; }
+        .upload-time { font-size: 0.7rem; color: rgba(0,0,0,0.6); font-weight: 600; margin-bottom: 0.25rem; }
+        .upload-content { font-size: 0.9rem; }
+        .upload-user { font-style: italic; color: #3498db; }
+        /* Hide any messages that might appear */
+        .message { display: none !important; }
+        /* Lightbox styles */
+        #imageLightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.4s ease; pointer-events: none; /* Prevent interaction when not active */ }
+        #imageLightbox.active { opacity: 1; pointer-events: auto; /* Allow interaction when active */ }
+        .lightbox-content { position: relative; max-width: 80%; max-height: 80%; }
+        .lightbox-close { position: absolute; top: -30px; right: -30px; background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+        .lightbox-title { color: white; text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -93,67 +107,94 @@
                 <% } %>
             </div>
 
-            <div class="recent-activities">
-                <h3><i class="fas fa-clock-rotate-left"></i> Recent Activity</h3>
+            <div class="recent-uploads">
+                <h3><i class="fas fa-clock-rotate-left"></i> Recent Uploads</h3>
                 <%
                     ArrayList<GalleryItem> recentActivities = (ArrayList<GalleryItem>) request.getAttribute("recentActivities");
                     if (recentActivities != null && !recentActivities.isEmpty()) {
                 %>
-                <div class="activity-list">
+                <div class="recent-uploads-list">
                     <% for(GalleryItem activity: recentActivities) { %>
-                        <div class="activity-item">
-                            <div class="activity-thumbnail">
+                        <div class="recent-upload-item">
+                            <div class="upload-thumbnail">
                                 <img src="${pageContext.request.contextPath}/imagedisplay?id=<%=activity.getId()%>" alt="<%=activity.getTitle()%>">
                             </div>
-                            <div class="activity-details">
-                                <div class="activity-time">Recent</div>
-                                <div class="activity-content">
-                                    <strong><%=activity.getTitle()%></strong> uploaded by <span class="activity-user"><%=activity.getUserName()%></span>
+                            <div class="upload-details">
+                                <div class="upload-time">Recent</div>
+                                <div class="upload-content">
+                                    <strong><%=activity.getTitle()%></strong> uploaded by <span class="upload-user"><%=activity.getUserName()%></span>
                                 </div>
                             </div>
                         </div>
                     <% } %>
                 </div>
                 <% } else { %>
-                    <p><i class="fas fa-info-circle"></i> No recent activities</p>
+                    <p><i class="fas fa-info-circle"></i> No recent uploads</p>
                 <% } %>
             </div>
         </div>
     </div>
 
+    <!-- Define lightbox functions first, before the HTML that uses them -->
+    <script>
+    // Lightbox functionality
+    function openLightbox(imageId, imageTitle) {
+        const lightbox = document.getElementById('imageLightbox');
+        const lightboxImage = document.getElementById('lightboxImage');
+        const lightboxTitle = document.getElementById('lightboxTitle');
+
+        // Set the image source and title
+        lightboxImage.src = '${pageContext.request.contextPath}/imagedisplay?id=' + imageId;
+        lightboxTitle.textContent = imageTitle;
+
+        // Wait for the image to load before showing the lightbox
+        lightboxImage.onload = function() {
+            // Make the lightbox visible and active
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is open
+        };
+
+        // Fallback in case the image doesn't load
+        setTimeout(function() {
+            if (!lightbox.classList.contains('active')) {
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }, 1000);
+    }
+
+    function closeLightbox() {
+        const lightbox = document.getElementById('imageLightbox');
+        lightbox.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+    </script>
+
     <!-- Lightbox for image preview -->
-    <div id="imageLightbox" class="lightbox">
+    <div id="imageLightbox">
         <div class="lightbox-content">
-            <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+            <button class="lightbox-close" id="lightboxCloseBtn">&times;</button>
             <img id="lightboxImage" src="" alt="">
             <h3 id="lightboxTitle" class="lightbox-title"></h3>
         </div>
     </div>
 
-    <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
+    <!-- Completely standalone script for gallery page - no external dependencies -->
     <script>
-        // Lightbox functionality
-        function openLightbox(imageId, imageTitle) {
-            const lightbox = document.getElementById('imageLightbox');
-            const lightboxImage = document.getElementById('lightboxImage');
-            const lightboxTitle = document.getElementById('lightboxTitle');
-
-            lightboxImage.src = '${pageContext.request.contextPath}/imagedisplay?id=' + imageId;
-            lightboxTitle.textContent = imageTitle;
-
-            lightbox.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is open
-        }
-
-        function closeLightbox() {
-            const lightbox = document.getElementById('imageLightbox');
-            lightbox.classList.remove('active');
-            document.body.style.overflow = ''; // Restore scrolling
-        }
+    // Standalone gallery page script - no dependencies on script.js
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set up lightbox close button
+        document.getElementById('lightboxCloseBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeLightbox();
+        });
 
         // Close lightbox when clicking outside the image
         document.getElementById('imageLightbox').addEventListener('click', function(e) {
             if (e.target === this) {
+                e.preventDefault();
+                e.stopPropagation();
                 closeLightbox();
             }
         });
@@ -164,6 +205,74 @@
                 closeLightbox();
             }
         });
+
+        // Ensure gallery items are clickable
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        galleryItems.forEach(item => {
+            const img = item.querySelector('img');
+            const id = item.getAttribute('data-id');
+            const title = item.getAttribute('data-title');
+
+            // Add explicit click handler to ensure it works
+            item.addEventListener('click', function(e) {
+                // Get the ID and title from the onclick attribute if data attributes aren't available
+                const onclickAttr = this.getAttribute('onclick');
+                if (onclickAttr && onclickAttr.includes('openLightbox')) {
+                    // Let the onclick attribute handle it
+                    return;
+                } else if (id && title) {
+                    e.preventDefault();
+                    openLightbox(id, title);
+                }
+            });
+
+            // Add hover effects
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.02)';
+                this.style.transition = 'all 0.5s ease';
+                if (img) {
+                    img.style.filter = 'brightness(1.05)';
+                    img.style.transition = 'all 0.5s ease';
+                }
+            });
+
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.transition = 'all 0.5s ease';
+                if (img) {
+                    img.style.filter = 'brightness(1)';
+                    img.style.transition = 'all 0.5s ease';
+                }
+            });
+
+            // Make sure delete buttons don't trigger the lightbox
+            const deleteBtn = item.querySelector('.button.secondary');
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // Navigate to the delete URL
+                    window.location.href = this.getAttribute('href');
+                });
+            }
+        });
+
+        // Add hover effects to buttons
+        const buttons = document.querySelectorAll('.button');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.transition = 'all 0.3s ease';
+                this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+            });
+
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+                this.style.transition = 'all 0.3s ease';
+                this.style.boxShadow = '';
+            });
+        });
+    });
     </script>
 </body>
 </html>
