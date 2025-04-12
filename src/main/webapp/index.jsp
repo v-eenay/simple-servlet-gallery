@@ -1,6 +1,8 @@
 <%@ page import="com.example.verysimpleimagegallery.model.User" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
 <%@ page import="com.example.verysimpleimagegallery.model.GalleryItem" %>
+<%@ page import="com.example.verysimpleimagegallery.model.ActivityLog" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
@@ -114,11 +116,48 @@
             <div class="recent-activities">
                 <h3><i class="fas fa-clock-rotate-left"></i> Recent Activity</h3>
                 <%
+                    List<ActivityLog> activityLogs = (List<ActivityLog>) request.getAttribute("activityLogs");
+                    if (activityLogs != null && !activityLogs.isEmpty()) {
+                %>
+                <div class="activity-list">
+                    <% for(ActivityLog log : activityLogs) {
+                        String activityTypeClass = log.getActivityType() != null ? "activity-" + log.getActivityType() : "";
+                    %>
+                        <div class="activity-item <%= activityTypeClass %>">
+                            <% if (log.getActivityType() != null && log.getActivityType().equals("upload")) { %>
+                                <div class="activity-icon">📷</div>
+                            <% } else if (log.getActivityType() != null && log.getActivityType().equals("login")) { %>
+                                <div class="activity-icon">🔑</div>
+                            <% } else if (log.getActivityType() != null && log.getActivityType().equals("admin")) { %>
+                                <div class="activity-icon">👑</div>
+                            <% } else if (log.getActivityType() != null && log.getActivityType().equals("system")) { %>
+                                <div class="activity-icon">⚙️</div>
+                            <% } else { %>
+                                <div class="activity-icon">📝</div>
+                            <% } %>
+                            <div class="activity-details">
+                                <div class="activity-time"><%= log.getFormattedTime() %></div>
+                                <div class="activity-content"><%= log.getActivity() %></div>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+                <% } else { %>
+                    <div class="activity-item">
+                        <div class="activity-icon">❓</div>
+                        <div class="activity-details">
+                            <div class="activity-content">No recent activities found</div>
+                        </div>
+                    </div>
+                <% } %>
+
+                <h3 class="mt-lg"><i class="fas fa-images"></i> Recent Uploads</h3>
+                <%
                     if (recentActivities != null && !recentActivities.isEmpty()) {
                 %>
                 <div class="activity-list">
                     <% for(GalleryItem activity: recentActivities) { %>
-                        <div class="activity-item">
+                        <div class="activity-item activity-upload">
                             <div class="activity-thumbnail">
                                 <img src="${pageContext.request.contextPath}/imagedisplay?id=<%=activity.getId()%>" alt="<%=activity.getTitle()%>">
                             </div>
@@ -132,7 +171,7 @@
                     <% } %>
                 </div>
                 <% } else { %>
-                    <p>No recent activities</p>
+                    <p>No recent uploads</p>
                 <% } %>
             </div>
         </div>

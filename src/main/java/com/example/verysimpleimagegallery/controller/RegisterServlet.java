@@ -1,5 +1,6 @@
 package com.example.verysimpleimagegallery.controller;
 
+import com.example.verysimpleimagegallery.service.ActivityLogService;
 import com.example.verysimpleimagegallery.service.AuthService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -21,12 +22,19 @@ public class RegisterServlet extends HttpServlet {
         String fullname = request.getParameter("fullname");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        
+
         try {
             // Use AuthService to create user with hashed password
             int userId = AuthService.createUser(fullname, email, password);
-            
+
             if (userId > 0) {
+                // Log the registration activity
+                ActivityLogService.logActivity(
+                    "New user registered: " + fullname + " (" + email + ")",
+                    "register",
+                    userId
+                );
+
                 // Registration successful, redirect to login page
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/login.jsp?regerror=false");
                 dispatcher.forward(request, response);

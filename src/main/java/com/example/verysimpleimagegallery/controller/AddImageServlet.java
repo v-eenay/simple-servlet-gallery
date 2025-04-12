@@ -2,6 +2,7 @@ package com.example.verysimpleimagegallery.controller;
 
 import com.example.verysimpleimagegallery.model.GalleryItem;
 import com.example.verysimpleimagegallery.model.User;
+import com.example.verysimpleimagegallery.service.ActivityLogService;
 import com.example.verysimpleimagegallery.service.GalleryService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -40,7 +41,15 @@ public class AddImageServlet extends HttpServlet {
         item.setTitle(title);
         item.setImage(imageBytes);
         item.setUserId(user.getId());
-        if (GalleryService.addGallery(item)>0){
+        int galleryItemId = GalleryService.addGallery(item);
+        if (galleryItemId > 0){
+            // Log the activity
+            ActivityLogService.logActivity(
+                "Image '" + title + "' uploaded",
+                "upload",
+                user.getId()
+            );
+
             session.setAttribute("user", user);
             request.setAttribute("imgmsg","You have successfully added a new image");
             response.sendRedirect(request.getContextPath() + "/home?success=true");

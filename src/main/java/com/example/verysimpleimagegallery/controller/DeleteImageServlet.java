@@ -2,6 +2,7 @@ package com.example.verysimpleimagegallery.controller;
 
 import com.example.verysimpleimagegallery.model.GalleryItem;
 import com.example.verysimpleimagegallery.model.User;
+import com.example.verysimpleimagegallery.service.ActivityLogService;
 import com.example.verysimpleimagegallery.service.GalleryService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -15,23 +16,29 @@ public class DeleteImageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute("user");
         String imageIdStr = request.getParameter("id");
-        
+
         if (imageIdStr == null || imageIdStr.isEmpty()) {
             response.sendRedirect(request.getContextPath() + "/gallery?error=true");
             return;
         }
-        
+
         try {
             int imageId = Integer.parseInt(imageIdStr);
             GalleryItem item = GalleryService.getGalleryItemById(imageId);
-            
+
             if (item == null || item.getUserId() != user.getId()) {
                 response.sendRedirect(request.getContextPath() + "/viewgallery?error=true");
                 return;
             }
-            
+
             boolean deleted = GalleryService.deleteGalleryItem(item);
             if (deleted) {
+                // Log the activity
+                ActivityLogService.logActivity(
+                    "Image '" + item.getTitle() + "' deleted",
+                    "delete",
+                    user.getId()
+                );
                 response.sendRedirect(request.getContextPath() + "/viewgallery?deleted=true");
             } else {
                 response.sendRedirect(request.getContextPath() + "/viewgallery?error=true");
