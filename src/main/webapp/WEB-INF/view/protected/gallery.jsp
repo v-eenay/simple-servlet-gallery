@@ -49,6 +49,8 @@
         .upload-time { font-size: 0.7rem; color: rgba(0,0,0,0.6); font-weight: 600; margin-bottom: 0.25rem; }
         .upload-content { font-size: 0.9rem; }
         .upload-user { font-style: italic; color: #3498db; }
+        /* Hide any messages that might appear */
+        .message { display: none !important; }
         .lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.4s ease; }
         .lightbox.active { opacity: 1; }
     </style>
@@ -138,58 +140,11 @@
         </div>
     </div>
 
-    <!-- Minimal script for gallery page - using standard script.js but with aggressive message removal -->
-    <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
+    <!-- Completely standalone script for gallery page - no external dependencies -->
     <script>
-    // Immediately remove any existing messages
-    function removeAllMessages() {
-        const messages = document.querySelectorAll('.message');
-        messages.forEach(message => {
-            if (message.parentNode) {
-                message.parentNode.removeChild(message);
-            }
-        });
-    }
-
-    // Run immediately
-    removeAllMessages();
-
-    // Override the problematic functions
-    window.logUserActivity = function() { return; };
-    window.showNotification = function() { return; };
-
-    // Set up a MutationObserver to catch and remove any messages that might be added
-    const observer = new MutationObserver(function(mutations) {
-        let needsRemoval = false;
-
-        mutations.forEach(function(mutation) {
-            if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-                for (let i = 0; i < mutation.addedNodes.length; i++) {
-                    const node = mutation.addedNodes[i];
-                    if (node.classList && node.classList.contains('message')) {
-                        needsRemoval = true;
-                    }
-                }
-            }
-        });
-
-        if (needsRemoval) {
-            removeAllMessages();
-        }
-    });
-
-    // Start observing the document body for changes
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    // Also run periodically
-    setInterval(removeAllMessages, 500);
-
-    // Run after DOM is fully loaded
+    // Standalone gallery page script - no dependencies on script.js
     document.addEventListener('DOMContentLoaded', function() {
-        // Remove any messages that might have appeared
-        removeAllMessages();
-
-        // Add hover effects to gallery items without interfering with click handlers
+        // Add hover effects to gallery items
         const galleryItems = document.querySelectorAll('.gallery-item');
         galleryItems.forEach(item => {
             const img = item.querySelector('img');
@@ -212,30 +167,45 @@
                 }
             });
         });
+
+        // Add hover effects to buttons
+        const buttons = document.querySelectorAll('.button');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.transition = 'all 0.3s ease';
+                this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+            });
+
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+                this.style.transition = 'all 0.3s ease';
+                this.style.boxShadow = '';
+            });
+        });
     });
-    </script>
 
-    <!-- Lightbox functionality -->
-    <script>
-        function openLightbox(imageId, imageTitle) {
-            const lightbox = document.getElementById('imageLightbox');
-            const lightboxImage = document.getElementById('lightboxImage');
-            const lightboxTitle = document.getElementById('lightboxTitle');
+    // Lightbox functionality
+    function openLightbox(imageId, imageTitle) {
+        const lightbox = document.getElementById('imageLightbox');
+        const lightboxImage = document.getElementById('lightboxImage');
+        const lightboxTitle = document.getElementById('lightboxTitle');
 
-            lightboxImage.src = '${pageContext.request.contextPath}/imagedisplay?id=' + imageId;
-            lightboxTitle.textContent = imageTitle;
+        lightboxImage.src = '${pageContext.request.contextPath}/imagedisplay?id=' + imageId;
+        lightboxTitle.textContent = imageTitle;
 
-            lightbox.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is open
-        }
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is open
+    }
 
-        function closeLightbox() {
-            const lightbox = document.getElementById('imageLightbox');
-            lightbox.classList.remove('active');
-            document.body.style.overflow = ''; // Restore scrolling
-        }
+    function closeLightbox() {
+        const lightbox = document.getElementById('imageLightbox');
+        lightbox.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
 
-        // Close lightbox when clicking outside the image
+    // Close lightbox when clicking outside the image
+    document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('imageLightbox').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeLightbox();
@@ -248,6 +218,7 @@
                 closeLightbox();
             }
         });
+    });
     </script>
 </body>
 </html>
