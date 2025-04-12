@@ -21,22 +21,21 @@ public class LoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         User user = null;
-        
+
         try {
             // Use AuthService to validate user with secure password checking
             user = AuthService.validateUser(email, password);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        
+
         if (user != null) {
             // Login successful
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
             session.setAttribute("isLoggedIn", true);
             if(user.isRegularUser()){
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp?loginerror=false");
-                dispatcher.forward(request, response);
+                response.sendRedirect(request.getContextPath() + "/home?loginerror=false");
             }
             else if (user.isAdmin() || user.isSuperAdmin()) {
                 // Use sendRedirect instead of forward for admin dashboard

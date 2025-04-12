@@ -43,11 +43,10 @@ public class AddImageServlet extends HttpServlet {
         if (GalleryService.addGallery(item)>0){
             session.setAttribute("user", user);
             request.setAttribute("imgmsg","You have successfully added a new image");
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
+            response.sendRedirect(request.getContextPath() + "/home?success=true");
         }
         else{
-            request.setAttribute("imgmsg","Something went wrong");
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
+            response.sendRedirect(request.getContextPath() + "/home?error=true");
         }
     }
 }

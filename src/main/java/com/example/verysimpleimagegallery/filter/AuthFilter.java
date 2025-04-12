@@ -25,7 +25,9 @@ public class AuthFilter implements Filter {
 
         // Allow login/logout/register and static files
         boolean isPublic = uri.equals(ctx + "/login") || uri.equals(ctx + "/logout") || uri.equals(ctx + "/register") ||
-                uri.endsWith(".css") || uri.endsWith(".js") || uri.endsWith(".png") || uri.endsWith(".jpg");
+                uri.contains("/assets/") || uri.contains("/static/") ||
+                uri.endsWith(".css") || uri.endsWith(".js") || uri.endsWith(".png") || uri.endsWith(".jpg") ||
+                uri.endsWith(".jpeg") || uri.endsWith(".gif") || uri.endsWith(".svg") || uri.endsWith(".ico");
 
         if (isLoggedIn || isPublic) {
             chain.doFilter(request, response);

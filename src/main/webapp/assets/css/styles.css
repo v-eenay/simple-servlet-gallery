@@ -10,16 +10,16 @@
     --color-dark: #1d1d1d;
     --color-error: #e74c3c;
     --color-success: #27ae60;
-    
+
     --space-xs: 0.25rem;
     --space-sm: 0.5rem;
     --space-md: 1rem;
     --space-lg: 2rem;
     --space-xl: 4rem;
-    
+
     --font-heading: 'Space Mono', monospace;
     --font-body: 'Work Sans', sans-serif;
-    
+
     --border-radius: 2px;
     --box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     --box-shadow-hover: 0 2px 6px rgba(0, 0, 0, 0.12);
@@ -341,6 +341,7 @@ input[type="file"] {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: var(--space-lg);
     margin-top: var(--space-lg);
+    margin-bottom: var(--space-xl);
 }
 
 .gallery-item {
@@ -351,6 +352,7 @@ input[type="file"] {
     transition: all 0.3s ease;
     position: relative;
     transform-origin: center;
+    cursor: pointer;
 }
 
 .gallery-item:hover {
@@ -358,9 +360,15 @@ input[type="file"] {
     box-shadow: var(--box-shadow-hover);
 }
 
+.gallery-image-container {
+    position: relative;
+    overflow: hidden;
+    height: 220px;
+}
+
 .gallery-item img {
     width: 100%;
-    height: 200px;
+    height: 100%;
     object-fit: cover;
     display: block;
     transition: all 0.3s ease;
@@ -368,6 +376,7 @@ input[type="file"] {
 
 .gallery-item:hover img {
     filter: brightness(1.05);
+    transform: scale(1.05);
 }
 
 .item-info {
@@ -499,7 +508,6 @@ input[type="file"] {
     max-height: 350px;
     overflow-y: auto;
     padding-right: var(--space-sm);
-    scrollbar-width: thin;
     border-left: 2px solid var(--color-primary);
     padding-left: var(--space-sm);
     font-family: var(--font-heading);
@@ -532,6 +540,32 @@ input[type="file"] {
     transition: all 0.3s ease;
     margin-bottom: 2px;
     border-left: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.activity-thumbnail {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.activity-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.activity-details {
+    flex: 1;
+}
+
+.activity-user {
+    font-weight: 600;
+    color: var(--color-primary);
 }
 
 .activity-item.activity-success {
@@ -822,30 +856,30 @@ input[type="file"] {
     h1 {
         font-size: 2rem;
     }
-    
+
     h2 {
         font-size: 1.5rem;
     }
-    
+
     .container {
         width: 95%;
         padding: var(--space-md);
     }
-    
+
     .gallery-grid {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
-    
+
     .nav-links {
         flex-direction: column;
         gap: var(--space-sm);
     }
-    
+
     .button {
         width: 100%;
         text-align: center;
     }
-    
+
     .logout-btn {
         margin-left: 0;
         margin-top: var(--space-md);
@@ -949,4 +983,74 @@ input[type="file"] {
 
 .upload-zone.highlight {
     border-color: var(--color-primary);
+}
+
+/* Featured Gallery Styles */
+.featured-gallery {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.featured-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+}
+
+.featured-item {
+    position: relative;
+    height: 180px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    transition: all 0.3s ease;
+}
+
+.featured-item:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-hover);
+}
+
+.featured-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.3s ease;
+}
+
+.featured-item:hover img {
+    transform: scale(1.05);
+}
+
+.featured-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--space-sm);
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    color: white;
+}
+
+.featured-overlay h5 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.featured-overlay p {
+    margin: 0;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.empty-message {
+    padding: var(--space-md);
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: var(--border-radius);
+    text-align: center;
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.5);
 }
