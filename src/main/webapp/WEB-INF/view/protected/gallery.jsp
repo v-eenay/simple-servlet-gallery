@@ -52,8 +52,8 @@
         /* Hide any messages that might appear */
         .message { display: none !important; }
         /* Lightbox styles */
-        #imageLightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.4s ease; }
-        #imageLightbox.active { opacity: 1; }
+        #imageLightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.4s ease; pointer-events: none; /* Prevent interaction when not active */ }
+        #imageLightbox.active { opacity: 1; pointer-events: auto; /* Allow interaction when active */ }
         .lightbox-content { position: relative; max-width: 80%; max-height: 80%; }
         .lightbox-close { position: absolute; top: -30px; right: -30px; background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
         .lightbox-title { color: white; text-align: center; margin-top: 10px; }
@@ -143,11 +143,24 @@
         const lightboxImage = document.getElementById('lightboxImage');
         const lightboxTitle = document.getElementById('lightboxTitle');
 
+        // Set the image source and title
         lightboxImage.src = '${pageContext.request.contextPath}/imagedisplay?id=' + imageId;
         lightboxTitle.textContent = imageTitle;
 
-        lightbox.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is open
+        // Wait for the image to load before showing the lightbox
+        lightboxImage.onload = function() {
+            // Make the lightbox visible and active
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is open
+        };
+
+        // Fallback in case the image doesn't load
+        setTimeout(function() {
+            if (!lightbox.classList.contains('active')) {
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }, 1000);
     }
 
     function closeLightbox() {
@@ -171,13 +184,17 @@
     // Standalone gallery page script - no dependencies on script.js
     document.addEventListener('DOMContentLoaded', function() {
         // Set up lightbox close button
-        document.getElementById('lightboxCloseBtn').addEventListener('click', function() {
+        document.getElementById('lightboxCloseBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             closeLightbox();
         });
 
         // Close lightbox when clicking outside the image
         document.getElementById('imageLightbox').addEventListener('click', function(e) {
             if (e.target === this) {
+                e.preventDefault();
+                e.stopPropagation();
                 closeLightbox();
             }
         });
@@ -189,11 +206,27 @@
             }
         });
 
-        // Add hover effects to gallery items
+        // Ensure gallery items are clickable
         const galleryItems = document.querySelectorAll('.gallery-item');
         galleryItems.forEach(item => {
             const img = item.querySelector('img');
+            const id = item.getAttribute('data-id');
+            const title = item.getAttribute('data-title');
 
+            // Add explicit click handler to ensure it works
+            item.addEventListener('click', function(e) {
+                // Get the ID and title from the onclick attribute if data attributes aren't available
+                const onclickAttr = this.getAttribute('onclick');
+                if (onclickAttr && onclickAttr.includes('openLightbox')) {
+                    // Let the onclick attribute handle it
+                    return;
+                } else if (id && title) {
+                    e.preventDefault();
+                    openLightbox(id, title);
+                }
+            });
+
+            // Add hover effects
             item.addEventListener('mouseenter', function() {
                 this.style.transform = 'scale(1.02)';
                 this.style.transition = 'all 0.5s ease';
@@ -211,6 +244,17 @@
                     img.style.transition = 'all 0.5s ease';
                 }
             });
+
+            // Make sure delete buttons don't trigger the lightbox
+            const deleteBtn = item.querySelector('.button.secondary');
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // Navigate to the delete URL
+                    window.location.href = this.getAttribute('href');
+                });
+            }
         });
 
         // Add hover effects to buttons
