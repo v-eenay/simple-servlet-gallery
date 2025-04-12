@@ -40,7 +40,15 @@
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: all 0.3s ease; }
         .item-info { padding: 1rem; }
         .item-title { margin: 0; font-size: 1.1rem; color: #1d1d1d; }
-        .recent-activities { background-color: #fefefe; border-radius: 2px; padding: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); max-height: 450px; overflow: hidden; display: flex; flex-direction: column; border-top: 3px solid #2c3e50; position: relative; }
+        .recent-uploads { background-color: #fefefe; border-radius: 2px; padding: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); max-height: 450px; overflow: hidden; display: flex; flex-direction: column; border-top: 3px solid #2c3e50; position: relative; }
+        .recent-uploads-list { overflow-y: auto; }
+        .recent-upload-item { display: flex; padding: 0.5rem; margin-bottom: 0.5rem; background-color: rgba(0,0,0,0.02); border-radius: 2px; transition: all 0.3s ease; }
+        .upload-thumbnail { width: 50px; height: 50px; overflow: hidden; margin-right: 0.5rem; }
+        .upload-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+        .upload-details { flex: 1; }
+        .upload-time { font-size: 0.7rem; color: rgba(0,0,0,0.6); font-weight: 600; margin-bottom: 0.25rem; }
+        .upload-content { font-size: 0.9rem; }
+        .upload-user { font-style: italic; color: #3498db; }
         .lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.4s ease; }
         .lightbox.active { opacity: 1; }
     </style>
@@ -93,29 +101,29 @@
                 <% } %>
             </div>
 
-            <div class="recent-activities">
-                <h3><i class="fas fa-clock-rotate-left"></i> Recent Activity</h3>
+            <div class="recent-uploads">
+                <h3><i class="fas fa-clock-rotate-left"></i> Recent Uploads</h3>
                 <%
                     ArrayList<GalleryItem> recentActivities = (ArrayList<GalleryItem>) request.getAttribute("recentActivities");
                     if (recentActivities != null && !recentActivities.isEmpty()) {
                 %>
-                <div class="activity-list">
+                <div class="recent-uploads-list">
                     <% for(GalleryItem activity: recentActivities) { %>
-                        <div class="activity-item">
-                            <div class="activity-thumbnail">
+                        <div class="recent-upload-item">
+                            <div class="upload-thumbnail">
                                 <img src="${pageContext.request.contextPath}/imagedisplay?id=<%=activity.getId()%>" alt="<%=activity.getTitle()%>">
                             </div>
-                            <div class="activity-details">
-                                <div class="activity-time">Recent</div>
-                                <div class="activity-content">
-                                    <strong><%=activity.getTitle()%></strong> uploaded by <span class="activity-user"><%=activity.getUserName()%></span>
+                            <div class="upload-details">
+                                <div class="upload-time">Recent</div>
+                                <div class="upload-content">
+                                    <strong><%=activity.getTitle()%></strong> uploaded by <span class="upload-user"><%=activity.getUserName()%></span>
                                 </div>
                             </div>
                         </div>
                     <% } %>
                 </div>
                 <% } else { %>
-                    <p><i class="fas fa-info-circle"></i> No recent activities</p>
+                    <p><i class="fas fa-info-circle"></i> No recent uploads</p>
                 <% } %>
             </div>
         </div>
@@ -130,45 +138,62 @@
         </div>
     </div>
 
-    <!-- Custom script for gallery page - completely bypassing the standard script.js -->
+    <!-- Minimal script for gallery page - using standard script.js but with aggressive message removal -->
+    <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
     <script>
     // Immediately remove any existing messages
-    (function() {
-        // Remove all messages regardless of content
+    function removeAllMessages() {
         const messages = document.querySelectorAll('.message');
         messages.forEach(message => {
             if (message.parentNode) {
                 message.parentNode.removeChild(message);
             }
         });
-    })();
+    }
 
-    // Define minimal required functions without activity logging
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize only what we need for this page
-        initGalleryItemsForThisPage();
-        initMessageDismissal();
-        addRetroEffects();
+    // Run immediately
+    removeAllMessages();
 
-        // Remove any messages that might have appeared
-        const messages = document.querySelectorAll('.message');
-        messages.forEach(message => {
-            if (message.parentNode) {
-                message.parentNode.removeChild(message);
+    // Override the problematic functions
+    window.logUserActivity = function() { return; };
+    window.showNotification = function() { return; };
+
+    // Set up a MutationObserver to catch and remove any messages that might be added
+    const observer = new MutationObserver(function(mutations) {
+        let needsRemoval = false;
+
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                for (let i = 0; i < mutation.addedNodes.length; i++) {
+                    const node = mutation.addedNodes[i];
+                    if (node.classList && node.classList.contains('message')) {
+                        needsRemoval = true;
+                    }
+                }
             }
         });
+
+        if (needsRemoval) {
+            removeAllMessages();
+        }
     });
 
-    // Simplified gallery initialization just for this page
-    function initGalleryItemsForThisPage() {
+    // Start observing the document body for changes
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Also run periodically
+    setInterval(removeAllMessages, 500);
+
+    // Run after DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Remove any messages that might have appeared
+        removeAllMessages();
+
+        // Add hover effects to gallery items without interfering with click handlers
         const galleryItems = document.querySelectorAll('.gallery-item');
-
-        if (galleryItems.length === 0) return;
-
         galleryItems.forEach(item => {
             const img = item.querySelector('img');
 
-            // Only add hover effects, don't interfere with the onclick attribute
             item.addEventListener('mouseenter', function() {
                 this.style.transform = 'scale(1.02)';
                 this.style.transition = 'all 0.5s ease';
@@ -186,95 +211,8 @@
                     img.style.transition = 'all 0.5s ease';
                 }
             });
-
-            // Make sure the delete button works
-            const deleteBtn = item.querySelector('.button.secondary');
-            if (deleteBtn) {
-                deleteBtn.addEventListener('click', function(e) {
-                    e.stopPropagation(); // Prevent triggering the parent's onclick
-                });
-            }
         });
-    }
-
-    // Simplified message dismissal function
-    function initMessageDismissal() {
-        // Track active messages
-        window.activeMessages = [];
-
-        // Function to dismiss a message
-        window.dismissMessage = function(message) {
-            message.style.opacity = '0';
-            message.style.transform = 'translate(-50%, -20px)';
-
-            setTimeout(() => {
-                if (message.parentNode) {
-                    message.parentNode.removeChild(message);
-                }
-
-                // Remove from active messages
-                const index = window.activeMessages.indexOf(message);
-                if (index > -1) {
-                    window.activeMessages.splice(index, 1);
-                }
-            }, 400);
-        };
-
-        // Simplified notification function that doesn't log activities
-        window.showNotification = function(message, type = 'info') {
-            // Skip all initialization messages
-            if (message.includes('initialized') || message.includes('Activity logging')) {
-                return null;
-            }
-
-            const notificationElement = document.createElement('div');
-            notificationElement.className = `message ${type}`;
-            notificationElement.textContent = message;
-
-            const closeBtn = document.createElement('button');
-            closeBtn.className = 'message-close';
-            closeBtn.innerHTML = '&times;';
-            closeBtn.setAttribute('aria-label', 'Dismiss message');
-
-            notificationElement.appendChild(closeBtn);
-            document.body.appendChild(notificationElement);
-
-            closeBtn.addEventListener('click', function() {
-                window.dismissMessage(notificationElement);
-            });
-
-            // Auto-dismiss all messages
-            setTimeout(() => {
-                window.dismissMessage(notificationElement);
-            }, 3000);
-
-            return notificationElement;
-        };
-
-        // Empty stub for logUserActivity that does nothing
-        window.logUserActivity = function() {
-            // Do nothing - completely disabled
-            return;
-        };
-    }
-
-    // Simplified retro effects
-    function addRetroEffects() {
-        const buttons = document.querySelectorAll('.button');
-        buttons.forEach(button => {
-            button.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-2px)';
-                this.style.transition = 'all 0.5s ease';
-                this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
-            });
-
-            button.addEventListener('mouseleave', function() {
-                this.style.transform = '';
-                this.style.transition = 'all 0.5s ease';
-                this.style.boxShadow = '';
-            });
-        });
-    }
+    });
     </script>
 
     <!-- Lightbox functionality -->
