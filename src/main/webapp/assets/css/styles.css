@@ -294,12 +294,32 @@ input[type="file"] {
 }
 
 .message {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     padding: var(--space-md);
     margin: var(--space-md) 0;
     border-radius: var(--border-radius);
     background-color: var(--color-light);
     border-left: 2px solid var(--color-primary);
-    box-shadow: var(--box-shadow);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    min-width: 300px;
+    max-width: 80%;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    animation: slideDown 0.5s ease forwards;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translate(-50%, -20px);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
 }
 
 .message.error {
@@ -310,6 +330,11 @@ input[type="file"] {
 .message.success {
     border-left-color: var(--color-success);
     background-color: rgba(39, 174, 96, 0.05);
+}
+
+.message.info {
+    border-left-color: var(--color-accent);
+    background-color: rgba(52, 152, 219, 0.05);
 }
 
 .gallery-title {
@@ -960,13 +985,26 @@ input[type="file"] {
 
 .message-close {
     position: absolute;
-    top: 10px;
+    top: 50%;
     right: 10px;
+    transform: translateY(-50%);
     background: none;
     border: none;
     font-size: 18px;
     cursor: pointer;
     color: rgba(0, 0, 0, 0.5);
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.message-close:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: rgba(0, 0, 0, 0.8);
 }
 
 .grain-overlay {
