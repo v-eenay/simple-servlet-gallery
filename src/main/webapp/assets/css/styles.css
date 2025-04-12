@@ -744,17 +744,22 @@ input[type="file"] {
 
 .pagination {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
+    align-items: center;
     gap: var(--space-xs);
     margin-top: var(--space-lg);
+    position: relative;
+    padding-bottom: var(--space-lg);
 }
 
 .pagination-link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
+    min-width: 30px;
     height: 30px;
+    padding: 0 var(--space-xs);
     border-radius: var(--border-radius);
     background-color: transparent;
     color: var(--color-text);
@@ -777,6 +782,17 @@ input[type="file"] {
     justify-content: center;
     width: 30px;
     height: 30px;
+}
+
+.pagination-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.8rem;
+    color: rgba(0, 0, 0, 0.6);
+    margin-top: var(--space-sm);
 }
 
 /* Dashboard Layout with Activity Sidebar */
