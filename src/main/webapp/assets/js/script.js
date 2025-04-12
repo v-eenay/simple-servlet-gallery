@@ -1,9 +1,29 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // First, clear any existing "Activity logging system initialized" messages
+    clearInitializationMessages();
+
+    // Then initialize components
     initImageUpload();
     initGalleryAnimations();
     initMessageDismissal();
     addRetroEffects();
 });
+
+// Function to clear any "Activity logging system initialized" messages
+function clearInitializationMessages() {
+    // Find all message elements
+    const messages = document.querySelectorAll('.message');
+
+    // Check each message for the initialization text
+    messages.forEach(message => {
+        if (message.textContent.includes('Activity logging system initialized')) {
+            // Remove the message if it contains the initialization text
+            if (message.parentNode) {
+                message.parentNode.removeChild(message);
+            }
+        }
+    });
+}
 
 function initImageUpload() {
     const imageInput = document.getElementById('imageInput');
@@ -158,7 +178,12 @@ function initGalleryAnimations() {
 
     // Enhanced function to log user activity and display notification
     window.logUserActivity = function(activity, type = 'info') {
-        // Always show notification to user
+        // Skip logging "Activity logging system initialized" messages completely
+        if (activity === 'Activity logging system initialized') {
+            return; // Exit the function early
+        }
+
+        // Always show notification to user (except for initialization messages)
         if (window.showNotification) {
             window.showNotification(activity, type);
         } else {
@@ -385,6 +410,20 @@ function initMessageDismissal() {
 
     // Enhanced notification function that can be called from anywhere
     window.showNotification = function(message, type = 'info') {
+        // Skip showing "Activity logging system initialized" messages completely
+        if (message === 'Activity logging system initialized') {
+            return null; // Exit the function early
+        }
+
+        // Check if this message already exists to prevent duplicates
+        const existingMessages = window.activeMessages || [];
+        for (let i = 0; i < existingMessages.length; i++) {
+            if (existingMessages[i].textContent.includes(message)) {
+                // Message already exists, don't create a duplicate
+                return existingMessages[i];
+            }
+        }
+
         const notificationElement = document.createElement('div');
         notificationElement.className = `message ${type}`;
         notificationElement.textContent = message;
@@ -398,6 +437,7 @@ function initMessageDismissal() {
         document.body.appendChild(notificationElement);
 
         // Add to active messages
+        window.activeMessages = window.activeMessages || [];
         window.activeMessages.push(notificationElement);
         updateMessagePositions();
 
@@ -407,18 +447,14 @@ function initMessageDismissal() {
 
         // Auto-dismiss success and info messages
         if (type === 'success' || type === 'info') {
-            const timeout = type === 'success' ? 5000 : 4000;
+            const timeout = type === 'success' ? 5000 : 3000; // Shorter timeout for info messages
             setTimeout(() => {
                 dismissMessage(notificationElement);
             }, timeout);
         }
 
-        // Log to activity log if it exists
-        if (window.logUserActivity && type !== 'error') {
-            // Don't log errors to activity log to avoid duplication
-            // since errors are typically logged separately
-            window.logUserActivity(message, type);
-        }
+        // We no longer log notifications to activity log to prevent recursion
+        // This prevents the issue where notifications create more notifications
 
         return notificationElement;
     };
