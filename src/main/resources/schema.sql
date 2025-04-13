@@ -32,3 +32,17 @@ CREATE TABLE IF NOT EXISTS activity_logs (
                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,   -- Track when the activity occurred
                               FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE -- Ensure logs are deleted if the user is deleted
 );
+
+CREATE TABLE IF NOT EXISTS activity_logs (
+                              id INT PRIMARY KEY AUTO_INCREMENT,
+                              activity VARCHAR(255) NOT NULL,
+                              activity_type VARCHAR(100),
+                              user_id INT NOT NULL,
+                              user_name VARCHAR(100),
+                              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                              CONSTRAINT fk_user
+                                  FOREIGN KEY (user_id)
+                                      REFERENCES users(id)
+                                      ON DELETE CASCADE
+                                      ON UPDATE CASCADE
+);
