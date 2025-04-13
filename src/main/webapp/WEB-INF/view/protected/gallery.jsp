@@ -1,6 +1,7 @@
 <%@ page import="com.example.verysimpleimagegallery.model.User" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.example.verysimpleimagegallery.model.GalleryItem" %>
+<%@ page import="com.example.verysimpleimagegallery.model.Tag" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
@@ -92,8 +93,16 @@
                             </div>
                             <div class="item-info">
                                 <h3 class="item-title"><%=galleryItem.getTitle()%></h3>
+                                <% if (galleryItem.getTags() != null && !galleryItem.getTags().isEmpty()) { %>
+                                <div class="item-tags">
+                                    <% for (Tag tag : galleryItem.getTags()) { %>
+                                        <span class="item-tag"><%=tag.getName()%></span>
+                                    <% } %>
+                                </div>
+                                <% } %>
                             </div>
                             <div class="item-actions">
+                                <a href="${pageContext.request.contextPath}/editimage?id=<%=galleryItem.getId()%>" class="button primary" onclick="event.stopPropagation();"><i class="fas fa-edit"></i> Edit</a>
                                 <a href="${pageContext.request.contextPath}/deleteimage?id=<%=galleryItem.getId()%>" class="button secondary" onclick="event.stopPropagation();"><i class="fas fa-trash"></i> Delete</a>
                             </div>
                         </div>

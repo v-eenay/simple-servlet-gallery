@@ -414,6 +414,27 @@ input[type="file"] {
     color: var(--color-dark);
 }
 
+.item-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+}
+
+.item-tag {
+    font-size: 0.7rem;
+    background-color: rgba(52, 152, 219, 0.1);
+    color: #3498db;
+    padding: 0.1rem 0.5rem;
+    border-radius: 12px;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.item-tag:hover {
+    background-color: rgba(52, 152, 219, 0.2);
+}
+
 .item-meta {
     display: flex;
     justify-content: space-between;

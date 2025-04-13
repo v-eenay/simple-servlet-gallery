@@ -46,3 +46,24 @@ CREATE TABLE IF NOT EXISTS activity_logs (
                                       ON DELETE CASCADE
                                       ON UPDATE CASCADE
 );
+-- Create the tags table
+CREATE TABLE IF NOT EXISTS tags (
+                                    id INT AUTO_INCREMENT PRIMARY KEY,
+                                    name VARCHAR(50) NOT NULL UNIQUE,
+                                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create the image_tags relationship table
+CREATE TABLE IF NOT EXISTS image_tags (
+                                          image_id INT NOT NULL,
+                                          tag_id INT NOT NULL,
+                                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                          PRIMARY KEY (image_id, tag_id),
+                                          FOREIGN KEY (image_id) REFERENCES gallery_items(id) ON DELETE CASCADE,
+                                          FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
+);
+
+-- Create index for faster lookups
+CREATE INDEX idx_image_tags_image_id ON image_tags(image_id);
+CREATE INDEX idx_image_tags_tag_id ON image_tags(tag_id);

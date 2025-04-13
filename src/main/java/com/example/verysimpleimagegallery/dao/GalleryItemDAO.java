@@ -13,10 +13,10 @@ import java.util.List;
  */
 public class GalleryItemDAO {
     // SQL query constants
-    private static final String BASE_SELECT_QUERY = 
+    private static final String BASE_SELECT_QUERY =
         "SELECT gi.id, gi.title, gi.image, gi.user_id, u.full_name " +
         "FROM gallery_items gi JOIN users u ON gi.user_id = u.id";
-    
+
     /**
      * Adds a new gallery item to the database.
      * @param item The gallery item to add
@@ -29,7 +29,7 @@ public class GalleryItemDAO {
             ps.setString(1, item.getTitle());
             ps.setBytes(2, item.getImage());
             ps.setInt(3, item.getUserId());
-            
+
             int affectedRows = ps.executeUpdate();
             if (affectedRows > 0) {
                 try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
@@ -72,6 +72,48 @@ public class GalleryItemDAO {
         String sql = BASE_SELECT_QUERY + " WHERE gi.id = ?";
         List<GalleryItem> items = executeGalleryQuery(sql, ps -> ps.setInt(1, itemId));
         return items.isEmpty() ? null : items.get(0);
+    }
+
+    /**
+     * Updates a gallery item's title in the database.
+     * @param itemId The ID of the gallery item to update
+     * @param title The new title
+     * @return true if update was successful, false otherwise
+     */
+    public static boolean updateGalleryItemTitle(int itemId, String title) {
+        String sql = "UPDATE gallery_items SET title = ? WHERE id = ?";
+        try (Connection conn = DbConnectionUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, title);
+            ps.setInt(2, itemId);
+
+            int affectedRows = ps.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            System.err.println("Error updating gallery item title: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Updates a gallery item's image in the database.
+     * @param itemId The ID of the gallery item to update
+     * @param image The new image data
+     * @return true if update was successful, false otherwise
+     */
+    public static boolean updateGalleryItemImage(int itemId, byte[] image) {
+        String sql = "UPDATE gallery_items SET image = ? WHERE id = ?";
+        try (Connection conn = DbConnectionUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setBytes(1, image);
+            ps.setInt(2, itemId);
+
+            int affectedRows = ps.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            System.err.println("Error updating gallery item image: " + e.getMessage());
+            return false;
+        }
     }
 
     /**
