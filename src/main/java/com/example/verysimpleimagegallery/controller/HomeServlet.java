@@ -1,13 +1,16 @@
 package com.example.verysimpleimagegallery.controller;
 
 import com.example.verysimpleimagegallery.model.ActivityLog;
+import com.example.verysimpleimagegallery.model.GalleryItem;
 import com.example.verysimpleimagegallery.model.User;
 import com.example.verysimpleimagegallery.service.ActivityLogService;
+import com.example.verysimpleimagegallery.service.GalleryService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,9 +36,9 @@ public class HomeServlet extends HttpServlet {
             return;
         }
 
-        // We don't need to get recent gallery activities anymore as we're using activity logs instead
-        // ArrayList<GalleryItem> recentActivities = GalleryService.getRecentActivities(RECENT_ACTIVITIES_LIMIT);
-        // request.setAttribute("recentActivities", recentActivities);
+        // Get featured images for the gallery
+        ArrayList<GalleryItem> featuredImages = GalleryService.getRecentActivities(RECENT_ACTIVITIES_LIMIT);
+        request.setAttribute("featuredImages", featuredImages);
 
         // Ensure there's at least one activity log for display purposes
         ActivityLogService.createSampleActivityLogIfNeeded(user.getId());

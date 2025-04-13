@@ -91,14 +91,14 @@
                     <p>Explore our curated collection of featured images from our community.</p>
 
                     <%
-                        ArrayList<GalleryItem> recentActivities = (ArrayList<GalleryItem>) request.getAttribute("recentActivities");
-                        if (recentActivities != null && !recentActivities.isEmpty() && recentActivities.size() >= 4) {
+                        ArrayList<GalleryItem> featuredImages = (ArrayList<GalleryItem>) request.getAttribute("featuredImages");
+                        if (featuredImages != null && !featuredImages.isEmpty()) {
                     %>
                     <div class="featured-grid">
-                        <% for(int i = 0; i < Math.min(4, recentActivities.size()); i++) {
-                            GalleryItem item = recentActivities.get(i);
+                        <% for(int i = 0; i < Math.min(4, featuredImages.size()); i++) {
+                            GalleryItem item = featuredImages.get(i);
                         %>
-                            <div class="featured-item">
+                            <div class="featured-item" onclick="openFeaturedImage(<%=item.getId()%>, '<%=item.getTitle()%>')">
                                 <img src="${pageContext.request.contextPath}/imagedisplay?id=<%=item.getId()%>" alt="<%=item.getTitle()%>">
                                 <div class="featured-overlay">
                                     <h5><%=item.getTitle()%></h5>
@@ -154,6 +154,51 @@
         </div>
     </div>
 
+    <!-- Lightbox for featured images -->
+    <div id="featuredLightbox" class="lightbox">
+        <div class="lightbox-content">
+            <span class="lightbox-close" onclick="closeFeaturedLightbox()">&times;</span>
+            <img id="lightboxImage" src="" alt="Featured Image">
+            <div id="lightboxTitle" class="lightbox-title"></div>
+        </div>
+    </div>
+
     <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
+    <script>
+        // Lightbox functionality for featured images
+        function openFeaturedImage(imageId, imageTitle) {
+            const lightbox = document.getElementById('featuredLightbox');
+            const lightboxImage = document.getElementById('lightboxImage');
+            const lightboxTitle = document.getElementById('lightboxTitle');
+
+            // Set the image source and title
+            lightboxImage.src = '${pageContext.request.contextPath}/imagedisplay?id=' + imageId;
+            lightboxTitle.textContent = imageTitle;
+
+            // Show the lightbox
+            lightbox.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeFeaturedLightbox() {
+            const lightbox = document.getElementById('featuredLightbox');
+            lightbox.style.display = 'none';
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        // Close lightbox when clicking outside the image
+        document.getElementById('featuredLightbox').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeFeaturedLightbox();
+            }
+        });
+
+        // Close lightbox with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('featuredLightbox').style.display === 'flex') {
+                closeFeaturedLightbox();
+            }
+        });
+    </script>
 </body>
 </html>
