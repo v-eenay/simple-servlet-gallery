@@ -150,29 +150,6 @@
                         </div>
                     </div>
                 <% } %>
-
-                <h3 class="mt-lg"><i class="fas fa-images"></i> Recent Uploads</h3>
-                <%
-                    if (recentActivities != null && !recentActivities.isEmpty()) {
-                %>
-                <div class="activity-list">
-                    <% for(GalleryItem activity: recentActivities) { %>
-                        <div class="activity-item activity-upload">
-                            <div class="activity-thumbnail">
-                                <img src="${pageContext.request.contextPath}/imagedisplay?id=<%=activity.getId()%>" alt="<%=activity.getTitle()%>">
-                            </div>
-                            <div class="activity-details">
-                                <div class="activity-time">Recent</div>
-                                <div class="activity-content">
-                                    <strong><%=activity.getTitle()%></strong> uploaded by <span class="activity-user"><%=activity.getUserName()%></span>
-                                </div>
-                            </div>
-                        </div>
-                    <% } %>
-                </div>
-                <% } else { %>
-                    <p>No recent uploads</p>
-                <% } %>
             </div>
         </div>
     </div>
