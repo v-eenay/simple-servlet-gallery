@@ -94,7 +94,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Contact
 
-**Binay Koirala**
+**Vinay Koirala**
 - Professional: binaya.koirala@iic.edu.np
 - Personal: koiralavinay@gmail.com
 - GitHub: [v-eenay](https://github.com/v-eenay)
