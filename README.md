@@ -1,4 +1,4 @@
-﻿# Simple Image Gallery
+ ﻿# Simple Image Gallery
 
 A modern, responsive web application for managing and displaying images with a clean and intuitive interface. This project demonstrates the implementation of a simple image gallery using Java Servlets, JSP, and modern front-end technologies.
 
